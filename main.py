@@ -4,9 +4,10 @@
     (!!!) DO NOT CHANGE ANY CODE IN THIS FILE. (!!!)
 """
 
+print 'Initializing BYOSE (this may take a minute the first time)...'
+
 from search_engine import SearchEngine, get_document
 
-print 'Initializing BYOSE (this may take a minute)...'
 se = SearchEngine()
 
 print 'Welcome to BYOSE, a search engine for the Reuters Corpus!'
@@ -21,6 +22,11 @@ while True:
     if command == 'i':
         se.approx_doc_matrices()
         se.train_classifiers()
+        print 'Successfully approximated the document matrices in each category!'
+        errors = se.test_classifiers()
+        for cat in errors.keys():
+            print cat, ' : ', errors[cat], ' misclassified documents.'
+
     elif command == 's':
         results = se.search(raw_input('Query: '))
         for (i, result) in enumerate(results):
@@ -34,8 +40,10 @@ while True:
                 break
             else:
                 print 'Bad article number. Try again.'
+
     elif command == 'q':
         break
+
     else:
         print 'Invalid command. Try again.'
 

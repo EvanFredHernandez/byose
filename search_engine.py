@@ -2,6 +2,7 @@
 import os
 import re
 import dill
+import numpy as np
 import toolbox as tb
 
 from nltk import word_tokenize
@@ -20,7 +21,7 @@ def get_category(doc_id):
     """Returns the document's category.'"""
     return reuters.categories(doc_id)
 
-def as_dict(categories, docs):
+def as_matrix_dict(categories, docs):
     """Maps each category to a list of documents under that category.
 
     Args:
@@ -28,15 +29,19 @@ def as_dict(categories, docs):
         categories: The corresponding categories for each doc.
 
     Returns:
-        A map from category name to a list of documents in that category.
+        A map from category name to a matrix of documents in that category.
     """
     docs_by_category = {category:[] for category in reuters.categories()}
     for (i, doc) in enumerate(docs):
         for category in categories[i]:
             docs_by_category[category].append(doc)
-            # TODO: It's inefficient to store multiple copies of each document.
-            # We should find a better way to manipulate this data.
-    return docs_by_category
+
+
+            print type(doc)
+            print len(doc)
+            print doc
+            return {}
+    return {cat:np.mat(docs_by_category[cat]) for cat in docs_by_category.keys()}
 
 class SearchEngine(object):
     """Defines a simple search engine for querying the Reuters-21578 Corpus.
@@ -82,8 +87,8 @@ class SearchEngine(object):
         test_docs = self.vectorizer.transform(test_docs)
 
         self.docs = {
-            'train': as_dict(train_categories, train_docs),
-            'test': as_dict(test_categories, test_docs)
+            'train': as_matrix_dict(train_categories, train_docs),
+            'test': as_matrix_dict(test_categories, test_docs)
         }
         self.category_classifiers = {}
 
@@ -125,7 +130,13 @@ class SearchEngine(object):
         return [token for token in tokens if ptrn.match(token) and len(token) >= min_length]
 
     def approx_doc_matrices(self):
-        """Performs latent semantic analysis on each category document matrix"""
+        """Performs latent semantic analysis on each category document matrix."""
+
+        """
+        for category in self.docs['train'].keys():
+            print category, ' : ', self.docs['train'][category].shape, ' vs ', len(reuters.fileids(category))
+        return
+        """
         self.docs['train'] = {
             category: tb.k_rank_approximate(self.docs['train'][category], 500)
             for category in reuters.categories()}
@@ -165,7 +176,7 @@ class SearchEngine(object):
             A list of 5 (id, document) tuples that best match the query.
 
         Raises:
-            Exception if LSA not performed, or classifiers not trained.
+            Exception if classifiers not yet trained.
         """
         if not self.category_classifiers:
             raise Exception('Search engine not initialized.')
@@ -175,7 +186,7 @@ class SearchEngine(object):
             {cat:[self.docs['train'][cat]] + [self.docs['test'][cat]]
              for cat in reuters.categories()})
         # TODO: This concatenation should be cached!
-    
+
     def visualize(self):
         """Plots a visualization of the category classifiers."""
         tb.visualize(self.category_classifiers)
