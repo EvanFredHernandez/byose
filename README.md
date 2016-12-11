@@ -10,7 +10,7 @@ A codelab for (B)uilding (Y)our (O)wn (S)earch (E)ngine. This lab assumes some p
 
 ##### Setup
 
-We used Python 2.7.11 on OSX10.0.1.
+We used Python 2.7.11 on OSX 10.0.1.
 
 Requirements
 * Python:
