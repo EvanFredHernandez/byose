@@ -14,7 +14,7 @@ We used `Python 2.7.11` and `pip 9.0.1` on `OSX 10.0.1` but these versions aren'
 
 After you've gotten those, run `setup.sh` to get setup. If this doesn't work, you can follow the below steps for manual setup.
 
-Manual setup
+##### Manual setup
 * Python:
 	* Installation: https://www.python.org/downloads/ 
 * Pip:
