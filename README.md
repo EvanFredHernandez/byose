@@ -15,7 +15,7 @@ We used Python 2.7.11 on OSX 10.0.1.
 Requirements
 * Python:
 	* Installation: https://www.python.org/downloads/ 
-* Python modules dill, nltk, sklearn, numpy:
+* Python libraries dill, nltk, sklearn, numpy:
 	* `pip install dill nltk sklearn numpy`
 * NLTK corpora:
 	* `python -m nltk.downloader punkt stopwords reuters`
