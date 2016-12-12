@@ -34,13 +34,12 @@ def as_matrix_dict(categories, docs):
     docs_by_category = {category:[] for category in reuters.categories()}
     for (i, doc) in enumerate(docs):
         for category in categories[i]:
-            docs_by_category[category].append(doc)
+            print doc.toarray().shape
+            docs_by_category[category].append(list(doc.toarray()))
 
+    for category in docs_by_category.keys():
+        print len(docs_by_category[category]), 'x', len(docs_by_category[category][0])
 
-            print type(doc)
-            print len(doc)
-            print doc
-            return {}
     return {cat:np.mat(docs_by_category[cat]) for cat in docs_by_category.keys()}
 
 class SearchEngine(object):
@@ -108,7 +107,7 @@ class SearchEngine(object):
         """
         tfidf = TfidfVectorizer(tokenizer=self.tokenize,
                                 min_df=3, max_df=0.90,
-                                max_features=3000, use_idf=True,
+                                max_features=100, use_idf=True,
                                 sublinear_tf=True, norm='l2')
         tfidf.fit(docs)
         return tfidf
@@ -132,11 +131,10 @@ class SearchEngine(object):
     def approx_doc_matrices(self):
         """Performs latent semantic analysis on each category document matrix."""
 
-        """
         for category in self.docs['train'].keys():
             print category, ' : ', self.docs['train'][category].shape, ' vs ', len(reuters.fileids(category))
         return
-        """
+
         self.docs['train'] = {
             category: tb.k_rank_approximate(self.docs['train'][category], 500)
             for category in reuters.categories()}
