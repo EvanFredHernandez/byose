@@ -34,12 +34,7 @@ def as_matrix_dict(categories, docs):
     docs_by_category = {category:[] for category in reuters.categories()}
     for (i, doc) in enumerate(docs):
         for category in categories[i]:
-            print doc.toarray().shape
-            docs_by_category[category].append(list(doc.toarray()))
-
-    for category in docs_by_category.keys():
-        print len(docs_by_category[category]), 'x', len(docs_by_category[category][0])
-
+            docs_by_category[category].append(doc.toarray()[0])
     return {cat:np.mat(docs_by_category[cat]) for cat in docs_by_category.keys()}
 
 class SearchEngine(object):
@@ -47,10 +42,6 @@ class SearchEngine(object):
 
     This code is mostly logistical: it loads and tokenizes the dataset and
     depends on toolbox.py for any machine learning functionality.
-
-    Attributes:
-        something...
-        something else...
     """
 
     def __init__(self):
@@ -79,7 +70,7 @@ class SearchEngine(object):
                 test_docs.append(get_document(doc_id))
                 test_categories.append(get_category(doc_id))
 
-        # Vectorize each document.
+        # Vectorize the documents.
         self.vectorizer = self.tf_idf(train_docs)
 
         train_docs = self.vectorizer.transform(train_docs)
@@ -107,7 +98,7 @@ class SearchEngine(object):
         """
         tfidf = TfidfVectorizer(tokenizer=self.tokenize,
                                 min_df=3, max_df=0.90,
-                                max_features=100, use_idf=True,
+                                max_features=3000, use_idf=True,
                                 sublinear_tf=True, norm='l2')
         tfidf.fit(docs)
         return tfidf
@@ -128,15 +119,14 @@ class SearchEngine(object):
         ptrn = re.compile('[a-zA-Z]+')
         return [token for token in tokens if ptrn.match(token) and len(token) >= min_length]
 
+    def get_doc_vector(self, doc_id):
+        """Returns the vector version of the document with the given ID."""
+        return self.vectorizer.transform(reuters.raw(doc_id))
+
     def approx_doc_matrices(self):
         """Performs latent semantic analysis on each category document matrix."""
-
-        for category in self.docs['train'].keys():
-            print category, ' : ', self.docs['train'][category].shape, ' vs ', len(reuters.fileids(category))
-        return
-
         self.docs['train'] = {
-            category: tb.k_rank_approximate(self.docs['train'][category], 500)
+            category: tb.k_rank_approximate(self.docs['train'][category], min(self.docs['train'][category].shape(0) / 2, 500))
             for category in reuters.categories()}
         # TODO: Should we also rank-approximate the test documents?
         # Should we store them together?

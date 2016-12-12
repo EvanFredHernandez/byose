@@ -19,10 +19,8 @@ def k_rank_approximate(doc_matrix, k):
         An (n, m) matrix with rank k formed by the first k singular
         values/vectors of doc_matrix.
     """
-    print doc_matrix.shape
     if np.linalg.matrix_rank(doc_matrix) <= k:
         raise Exception('Given document matrix is too low rank.')
-
     u, s, v = np.linalg.svd(doc_matrix)
     s = np.diag(s)
     return  np.dot(np.dot(u[:, :k], s[:k, :k]), v[:k, :])
@@ -82,10 +80,11 @@ def create_category_classifiers(category_train_documents):
         for cat_2 in [c for c in category_train_documents.keys() if c != cat_1]:
             A = category_train_documents['cat_1'] + category_train_documents['cat_2']
             y = np.concatenate(
-                np.ones(category_train_documents['cat_1']),
-                -np.ones(category_train_documents['cat_2']))
+                np.ones(category_train_documents[cat_1]),
+                -np.ones(category_train_documents[cat_2]))
             w = train_ls_classifier(A, y)
             category_classifiers[cat_1][cat_2] = w
+            print w
             return {}
     return {}
 
