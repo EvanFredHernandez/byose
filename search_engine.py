@@ -126,8 +126,11 @@ class SearchEngine(object):
     def approx_doc_matrices(self):
         """Performs latent semantic analysis on each category document matrix."""
         self.docs['train'] = {
-            category: tb.k_rank_approximate(self.docs['train'][category], min(self.docs['train'][category].shape(0) / 2, 500))
-            for category in reuters.categories()}
+            category: tb.k_rank_approximate(
+                self.docs['train'][category],
+                min(self.docs['train'][category].shape[0] / 2, 500))
+            for category in reuters.categories()
+        }
         # TODO: Should we also rank-approximate the test documents?
         # Should we store them together?
 

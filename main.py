@@ -20,9 +20,13 @@ print '\t-- q\tquit'
 while True:
     command = raw_input('>> ')
     if command == 'i':
+        print 'Approximating document matrices with latent semantic analysis...'
         se.approx_doc_matrices()
+        
+        print 'Training classifiers...'
         se.train_classifiers()
-        print 'Successfully approximated the document matrices in each category!'
+        
+        print 'Computing classification error by category...'
         errors = se.test_classifiers()
         for cat in errors.keys():
             print cat, ' : ', errors[cat], ' misclassified documents.'

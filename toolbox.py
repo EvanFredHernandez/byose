@@ -35,10 +35,9 @@ def train_ls_classifier(A, y):
     Returns:
         An (m, 1) vector of the optimal classification weights.
     """
-    A = np.mat(A)
-    w = np.zeros((A.shape[1], 1))
-    num_iterations = 20000
-    learning_rate = 0.003
+    w = np.zeros((A.shape[1],))
+    num_iterations = 10000
+    learning_rate = 0.01
     regularization_weight = 0.1
     for i in range(num_iterations):
         z = np.asarray(w - learning_rate * A.transpose() * (A * w - y))
@@ -78,13 +77,16 @@ def create_category_classifiers(category_train_documents):
     for cat_1 in category_train_documents.keys():
         category_classifiers[cat_1] = {}
         for cat_2 in [c for c in category_train_documents.keys() if c != cat_1]:
-            A = category_train_documents['cat_1'] + category_train_documents['cat_2']
-            y = np.concatenate(
-                np.ones(category_train_documents[cat_1]),
-                -np.ones(category_train_documents[cat_2]))
+            A = np.concatenate((
+                category_train_documents[cat_1],
+                category_train_documents[cat_2]))
+            y = np.concatenate((
+                np.ones(category_train_documents[cat_1].shape[0]),
+                -np.ones(category_train_documents[cat_2].shape[0])))
             w = train_ls_classifier(A, y)
             category_classifiers[cat_1][cat_2] = w
-            print w
+            print w.shape
+            print np.count_nonzero(w)
             return {}
     return {}
 

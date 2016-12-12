@@ -12,4 +12,5 @@ A = np.mat([[1, 2, 3, 4],
             [7, 8, 9, 11]])
 y = np.mat([[1], [-1], [1]])
 LS = tb.train_ls_classifier(A, y)
+
 print LS
