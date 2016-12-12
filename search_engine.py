@@ -87,6 +87,11 @@ class SearchEngine(object):
             dill.dump(self.vectorizer, vfile)
             dill.dump(self.docs, dfile)
 
+    """Use this function for question 1."""
+    def get_doc_vector(self, doc_id):
+        """Returns the vector version of the document with the given ID. """
+        return self.vectorizer.transform([reuters.raw(doc_id)]).toarray().transpose()
+
     def tf_idf(self, docs):
         """Computes the tf-idf vectorizer for the given document set.
 
@@ -118,10 +123,6 @@ class SearchEngine(object):
                   if word not in stopwords.words('english')]
         ptrn = re.compile('[a-zA-Z]+')
         return [token for token in tokens if ptrn.match(token) and len(token) >= min_length]
-
-    def get_doc_vector(self, doc_id):
-        """Returns the vector version of the document with the given ID."""
-        return self.vectorizer.transform(reuters.raw(doc_id))
 
     def approx_doc_matrices(self):
         """Performs latent semantic analysis on each category document matrix."""
