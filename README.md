@@ -10,15 +10,19 @@ A codelab for (B)uilding (Y)our (O)wn (S)earch (E)ngine. This lab assumes some p
 
 ##### Setup
 
-We used Python 2.7.11 on OSX 10.0.1.
+We used `Python 2.7.11` and `pip 9.0.1` on `OSX 10.0.1` but these versions aren't at all mandatory. If you do encounter trouble getting setup, we recommend that you try updating your packages.
 
-Requirements
+After you've gotten those, run `setup.sh` to get setup. If this doesn't work, you can follow the below steps for manual setup.
+
+##### Manual setup
 * Python:
 	* Installation: https://www.python.org/downloads/ 
-* Python modules dill nltk sklearn:
-	* `pip install dill nltk sklearn`
+* Pip:
+	* `sudo easy_install pip`
+* Python libraries dill, nltk, sklearn, numpy:
+	* `sudo pip install dill nltk sklearn numpy`
 * NLTK corpora:
 	* `python -m nltk.downloader punkt stopwords reuters`
 * This repository's code:
 	* `git clone git@github.com:EvanFredHernandez/byose.git`
-	* Then run `python main.py` to initialize BYOSE. It may take a few minutes.
+	* Then run `python setup.py` to initialize BYOSE. It may take a few minutes.
