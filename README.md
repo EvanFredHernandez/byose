@@ -18,9 +18,9 @@ After you've gotten those, run `setup.sh` to get setup. If this doesn't work, yo
 * Python:
 	* Installation: https://www.python.org/downloads/ 
 * Pip:
-	* `brew install pip`
+	* `sudo easy_install pip`
 * Python libraries dill, nltk, sklearn, numpy:
-	* `pip install dill nltk sklearn numpy`
+	* `sudo pip install dill nltk sklearn numpy`
 * NLTK corpora:
 	* `python -m nltk.downloader punkt stopwords reuters`
 * This repository's code:
