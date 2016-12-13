@@ -10,7 +10,21 @@ from search_engine import SearchEngine, get_document
 
 se = SearchEngine()
 
-print 'Welcome to BYOSE, a search engine for the Reuters Corpus!'
+print """
+       dBBBBBBBBBBBBBBBBBBBBBBBBb
+      BP YBBBBBBBBBBBBBBBBBBBBBBBb
+     dB   YBb                 YBBBb
+     dB    YBBBBBBBBBBBBBBBBBBBBBBBb
+      Yb    YBBBBBBBBBBBBBBBBBBBBBBBb
+       Yb    YBBBBBBBBBBBBBBBBBBBBBBBb        Welcome to BYOSE, a search engine for the Reuters Corpus!
+        Yb    YBBBBBBBBBBBBBBBBBBBBBBBb
+         Yb    YBBBBBBBBBBBBBBBBBBBBBBBb      Created by Evan Hernandez, David Liang, and Alec Yu.
+          Yb    YBBBBBBBBBBBBBBBBBBBBBBBb
+           Yb   dBBBBBBBBBBBBBBBBBBBBBBBBb
+            Yb dP=======================/
+             YbB=======================(
+              Ybb=======================\\
+               Y888888888888888888DSI8888b"""
 
 print '\n\nTo get started, enter a command:'
 print '\t-- i\tinitalize the search engine'
@@ -22,15 +36,14 @@ while True:
     if command == 'i':
         print 'Approximating document matrices with latent semantic analysis...'
         se.approx_doc_matrices()
-        
+
         print 'Training classifiers...'
         se.train_classifiers()
-        
+
         print 'Computing classification error by category...'
         errors = se.test_classifiers()
         for cat in errors.keys():
             print cat, ' : ', errors[cat], ' misclassified documents.'
-
     elif command == 's':
         results = se.search(raw_input('Query: '))
         for (i, result) in enumerate(results):

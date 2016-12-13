@@ -1,14 +1,20 @@
 """ (!!!) DO NOT CHANGE ANY CODE IN THIS FILE. (!!!) """
+import imp
 import os
 import re
+import thread
 import dill
 import numpy as np
-import toolbox as tb
 
 from nltk import word_tokenize
 from nltk.corpus import reuters, stopwords
 from nltk.stem.porter import PorterStemmer
 from sklearn.feature_extraction.text import TfidfVectorizer
+
+p1 = imp.load_module('part1_sols', 'solutions/part1_sols')
+p2 = imp.load_module('part2_sols', 'solutions/part2_sols')
+p3 = imp.load_module('part3_sols', 'solutions/part3_sols')
+p4 = imp.load_module('part4_sols', 'solutions/part4_sols')
 
 VECTORIZER_PATH = 'vectorizer.pkl'
 DOCS_PATH = 'docs.pkl'
@@ -18,7 +24,7 @@ def get_document(doc_id):
     return reuters.raw(doc_id)
 
 def get_category(doc_id):
-    """Returns the document's category.'"""
+    """Returns the document's category."""
     return reuters.categories(doc_id)
 
 def as_matrix_dict(categories, docs):
@@ -37,11 +43,22 @@ def as_matrix_dict(categories, docs):
             docs_by_category[category].append(doc.toarray()[0])
     return {cat:np.mat(docs_by_category[cat]) for cat in docs_by_category.keys()}
 
+def compute_rank_reduction(matrix):
+    """Utility method for determining the appropriate rank reduction.
+
+    Args:
+        matrix: The (n, m) matrix to rank-reduce.abs
+
+    Returns:
+        The smaller of 1/3 * m and 300.
+    """
+    return min(matrix.shape[0] / 3, 300)
+
 class SearchEngine(object):
     """Defines a simple search engine for querying the Reuters-21578 Corpus.
 
     This code is mostly logistical: it loads and tokenizes the dataset and
-    depends on toolbox.py for any machine learning functionality.
+    depends on the lab code for any machine learning functionality.
     """
 
     def __init__(self):
@@ -63,7 +80,7 @@ class SearchEngine(object):
         train_categories = []
         test_categories = []
         for doc_id in reuters.fileids():
-            if doc_id.startswith("train"):
+            if doc_id.startswith('train'):
                 train_docs.append(get_document(doc_id))
                 train_categories.append(get_category(doc_id))
             else:
@@ -87,9 +104,11 @@ class SearchEngine(object):
             dill.dump(self.vectorizer, vfile)
             dill.dump(self.docs, dfile)
 
-    """Use this function for question 1."""
     def get_doc_vector(self, doc_id):
-        """Returns the vector version of the document with the given ID. """
+        """Returns the vector version of the document with the given ID.
+
+        This function should be used for question 1.
+        """
         return self.vectorizer.transform([reuters.raw(doc_id)]).toarray().transpose()
 
     def tf_idf(self, docs):
@@ -126,18 +145,20 @@ class SearchEngine(object):
 
     def approx_doc_matrices(self):
         """Performs latent semantic analysis on each category document matrix."""
-        self.docs['train'] = {
-            category: tb.k_rank_approximate(
-                self.docs['train'][category],
-                min(self.docs['train'][category].shape[0] / 2, 500))
-            for category in reuters.categories()
-        }
         # TODO: Should we also rank-approximate the test documents?
         # Should we store them together?
+        for category in reuters.categories():
+            thread.start_new_thread(self.approx_doc_matrix, (category,))
+
+    def approx_doc_matrix(self, category):
+        """Launches k-rank approximation for given category matrix on new thread."""
+        self.docs['train'][category] = p1.k_rank_approximate(
+            self.docs['train'][category],
+            compute_rank_reduction(self.docs['train'][category]))
 
     def train_classifiers(self):
         """Delegates to the toolbox to train each category classifier."""
-        self.category_classifiers = tb.create_category_classifiers(self.docs['train'])
+        self.category_classifiers = p3.train_one_vs_one_classifier(self.docs['train'])
 
     def test_classifiers(self):
         """Calculates classification error for each category classifier.
@@ -178,7 +199,3 @@ class SearchEngine(object):
             {cat:[self.docs['train'][cat]] + [self.docs['test'][cat]]
              for cat in reuters.categories()})
         # TODO: This concatenation should be cached!
-
-    def visualize(self):
-        """Plots a visualization of the category classifiers."""
-        tb.visualize(self.category_classifiers)
