@@ -1,183 +1,55 @@
 """ (!!!) DO NOT CHANGE ANY CODE IN THIS FILE. (!!!) """
 import imp
-import os
-import re
 import thread
-import dill
-import numpy as np
-
-from nltk import word_tokenize
-from nltk.corpus import reuters, stopwords
-from nltk.stem.porter import PorterStemmer
-from sklearn.feature_extraction.text import TfidfVectorizer
+from corpus import Corpus
 
 p1 = imp.load_module('part1_sols', 'solutions/part1_sols')
 p2 = imp.load_module('part2_sols', 'solutions/part2_sols')
 p3 = imp.load_module('part3_sols', 'solutions/part3_sols')
 p4 = imp.load_module('part4_sols', 'solutions/part4_sols')
 
-VECTORIZER_PATH = 'vectorizer.pkl'
-DOCS_PATH = 'docs.pkl'
-
-def get_document(doc_id):
-    """Returns the raw document text."""
-    return reuters.raw(doc_id)
-
-def get_category(doc_id):
-    """Returns the document's category."""
-    return reuters.categories(doc_id)
-
-def as_matrix_dict(categories, docs):
-    """Maps each category to a list of documents under that category.
-
-    Args:
-        docs: The documents to be grouped by category.
-        categories: The corresponding categories for each doc.
-
-    Returns:
-        A map from category name to a matrix of documents in that category.
-    """
-    docs_by_category = {category:[] for category in reuters.categories()}
-    for (i, doc) in enumerate(docs):
-        for category in categories[i]:
-            docs_by_category[category].append(doc.toarray()[0])
-    return {cat:np.mat(docs_by_category[cat]) for cat in docs_by_category.keys()}
-
-def compute_rank_reduction(matrix):
-    """Utility method for determining the appropriate rank reduction.
-
-    Args:
-        matrix: The (n, m) matrix to rank-reduce.abs
-
-    Returns:
-        The smaller of 1/3 * m and 300.
-    """
-    return min(matrix.shape[0] / 3, 300)
-
 class SearchEngine(object):
-    """Defines a simple search engine for querying the Reuters-21578 Corpus.
+    """Simple search engine for the Reuters-21578 corpus.abs
 
-    This code is mostly logistical: it loads and tokenizes the dataset and
-    depends on the lab code for any machine learning functionality.
+    This is a thin wrapper about the Database class that calls on functions
+    from the lab exercises to implement search functionality.
     """
 
     def __init__(self):
-        """Loads the Reuters-21578 corpus from nltk and vectorizes the documents.
-
-        After running the first time, this initializer caches the vectorized
-        Reuters corpus in a pickle file. To redo these computations, simply delete
-        the vectorizer.pickle and docs.pickle files in the current directory.
-        """
-        if os.path.exists(VECTORIZER_PATH) and os.path.exists(DOCS_PATH):
-            with open(VECTORIZER_PATH) as vfile, open(DOCS_PATH) as dfile:
-                self.vectorizer = dill.load(vfile)
-                self.docs = dill.load(dfile)
-            return
-
-        # Load the Reuters corpus.
-        train_docs = []
-        test_docs = []
-        train_categories = []
-        test_categories = []
-        for doc_id in reuters.fileids():
-            if doc_id.startswith('train'):
-                train_docs.append(get_document(doc_id))
-                train_categories.append(get_category(doc_id))
-            else:
-                test_docs.append(get_document(doc_id))
-                test_categories.append(get_category(doc_id))
-
-        # Vectorize the documents.
-        self.vectorizer = self.tf_idf(train_docs)
-
-        train_docs = self.vectorizer.transform(train_docs)
-        test_docs = self.vectorizer.transform(test_docs)
-
-        self.docs = {
-            'train': as_matrix_dict(train_categories, train_docs),
-            'test': as_matrix_dict(test_categories, test_docs)
-        }
-        self.category_classifiers = {}
-
-        # Cache the vectorized corpus.
-        with open(VECTORIZER_PATH, 'w') as vfile, open(DOCS_PATH, 'w') as dfile:
-            dill.dump(self.vectorizer, vfile)
-            dill.dump(self.docs, dfile)
-
-    def get_doc_vector(self, doc_id):
-        """Returns the vector version of the document with the given ID.
-
-        This function should be used for question 1.
-        """
-        return self.vectorizer.transform([reuters.raw(doc_id)]).toarray().transpose()
-
-    def tf_idf(self, docs):
-        """Computes the tf-idf vectorizer for the given document set.
-
-        Args:
-            docs: List of documents on which to apply tf-idf.
-
-        Returns:
-            Instance of sklearn's TfidfVectorizer.
-        """
-        tfidf = TfidfVectorizer(tokenizer=self.tokenize,
-                                min_df=3, max_df=0.90,
-                                max_features=3000, use_idf=True,
-                                sublinear_tf=True, norm='l2')
-        tfidf.fit(docs)
-        return tfidf
-
-    def tokenize(self, text):
-        """Tokenizes the given text into non-stopword, non-numeric word stems.
-
-        Args:
-            text: The text to tokenize.
-
-        Returns:
-            Tokenized text with stopwords removed.
-        """
-        min_length = 3
-        tokens = [PorterStemmer().stem(word.lower())
-                  for word in word_tokenize(text)
-                  if word not in stopwords.words('english')]
-        ptrn = re.compile('[a-zA-Z]+')
-        return [token for token in tokens if ptrn.match(token) and len(token) >= min_length]
+        """Caches the vectorized corpus."""
+        self.corp = Corpus()
+        self.approx_docs = {'train': {}, 'test': {}}
+        self.one_vs_one_classifier = None
+        self.max_rank_reduction = 300
 
     def approx_doc_matrices(self):
-        """Performs latent semantic analysis on each category document matrix."""
-        # TODO: Should we also rank-approximate the test documents?
-        # Should we store them together?
-        for category in reuters.categories():
-            thread.start_new_thread(self.approx_doc_matrix, (category,))
+        """Performs latent semantic analysis on each training category doc matrix.
 
-    def approx_doc_matrix(self, category):
-        """Launches k-rank approximation for given category matrix on new thread."""
-        self.docs['train'][category] = p1.k_rank_approximate(
-            self.docs['train'][category],
-            compute_rank_reduction(self.docs['train'][category]))
+        Each approximation is calculated on a separate thread.
+        """
+        for category in Corpus.all_categories():
+            thread.start_new_thread(self._approx_doc_matrix, (category,))
+
+    def _approx_doc_matrix(self, category):
+        """Launches k-rank approximation for given category matrix."""
+        train_matrix = self.corp.train_matrix(category)
+        self.approx_docs['train'][category] = p1.k_rank_approximate(
+            train_matrix, self._compute_rank_reduction(train_matrix))
+
+    def _compute_rank_reduction(self, matrix):
+        """Utility method for determining the appropriate rank reduction.
+
+        Args:
+            matrix: The (n, m) matrix to rank-reduce.abs
+
+        Returns:
+            The smaller of 1/3 * m and 300.
+        """
+        return min(matrix.shape[0] / 3, self.max_rank_reduction)
 
     def train_classifiers(self):
         """Delegates to the toolbox to train each category classifier."""
-        self.category_classifiers = p3.train_one_vs_one_classifier(self.docs['train'])
-
-    def test_classifiers(self):
-        """Calculates classification error for each category classifier.
-
-        Returns:
-            A map from categories to classification error. For example:
-            {
-             'category_1': 5
-             'category_2': 120
-             'category_3': 26
-             ...
-            }
-
-        Raises:
-            Exception if classifiers have not yet been trained.
-        """
-        if not self.category_classifiers:
-            raise Exception('You haven\'t trained the classifiers yet!')
-        return tb.test_category_classifiers(self.category_classifiers, self.docs['test'])
+        self.one_vs_one_classifier = p3.train_one_vs_one_classifier(self.approx_docs['train'])
 
     def search(self, query):
         """Finds 5 distinct documents that match the query.
@@ -191,11 +63,8 @@ class SearchEngine(object):
         Raises:
             Exception if classifiers not yet trained.
         """
-        if not self.category_classifiers:
-            raise Exception('Search engine not initialized.')
-        return tb.find_closest_documents(
-            self.vectorizer.transform(query),
-            self.category_classifiers,
-            {cat:[self.docs['train'][cat]] + [self.docs['test'][cat]]
-             for cat in reuters.categories()})
-        # TODO: This concatenation should be cached!
+        return p4.find_closest_documents(
+            self.corp.vectorize(query),
+            self.one_vs_one_classifier,
+            {cat:[self.approx_docs['train'][cat]] + [self.approx_docs['test'][cat]]
+             for cat in Corpus.all_categories()})

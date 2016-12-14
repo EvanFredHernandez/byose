@@ -1,16 +1,17 @@
-"""
-    Main script for creating and interacting with the search engine.
+"""Run me to test the search engine!
 
-    (!!!) DO NOT CHANGE ANY CODE IN THIS FILE. (!!!)
-"""
+(!!!) DO NOT CHANGE ANY CODE IN THIS FILE. (!!!) """
+import corpus
 
-print 'Initializing BYOSE (this may take a minute the first time)...'
+from search_engine import SearchEngine
 
-from search_engine import SearchEngine, get_document
+def main():
+    """Runs simple command line interface for searching Reuters corpus."""
+    print 'Initializing BYOSE (this may take a minute the first time)...'
 
-se = SearchEngine()
+    engine = SearchEngine()
 
-print """
+    print """
        dBBBBBBBBBBBBBBBBBBBBBBBBb
       BP YBBBBBBBBBBBBBBBBBBBBBBBb
      dB   YBb                 YBBBb
@@ -26,41 +27,39 @@ print """
               Ybb=======================\\
                Y888888888888888888DSI8888b"""
 
-print '\n\nTo get started, enter a command:'
-print '\t-- i\tinitalize the search engine'
-print '\t-- s\tsearch'
-print '\t-- q\tquit'
+    print '\n\nTo get started, enter a command.'
 
-while True:
-    command = raw_input('>> ')
-    if command == 'i':
-        print 'Approximating document matrices with latent semantic analysis...'
-        se.approx_doc_matrices()
+    while True:
+        print 'Commands:'
+        print '\t-- i\tinitalize the search engine'
+        print '\t-- s\tsearch'
+        print '\t-- q\tquit'
+        command = raw_input('>> ')
+        if command == 'i':
+            print 'Approximating document matrices with latent semantic analysis...'
+            engine.approx_doc_matrices()
 
-        print 'Training classifiers...'
-        se.train_classifiers()
+            print 'Training classifiers...'
+            engine.train_classifiers()
+        elif command == 's':
+            results = engine.search(raw_input('Query: '))
+            for (i, result) in enumerate(results):
+                print '\t[', i+1, '] ', result[i][1]
+            while True:
+                doc_num = int(raw_input('Number of document to open, or 0 to exit: '))
+                if doc_num == 0:
+                    break
+                elif doc_num > 0 and doc_num <= len(results):
+                    print corpus.document_text(results[doc_num][0])
+                    break
+                else:
+                    print 'Bad article number. Try again.'
 
-        print 'Computing classification error by category...'
-        errors = se.test_classifiers()
-        for cat in errors.keys():
-            print cat, ' : ', errors[cat], ' misclassified documents.'
-    elif command == 's':
-        results = se.search(raw_input('Query: '))
-        for (i, result) in enumerate(results):
-            print '\t[', i+1, '] ', result[i][1]
-        while True:
-            doc_num = int(raw_input('Number of document to open, or 0 to exit: '))
-            if doc_num == 0:
-                break
-            elif doc_num > 0 and doc_num <= len(results):
-                print get_document(results[doc_num][0])
-                break
-            else:
-                print 'Bad article number. Try again.'
+        elif command == 'q':
+            break
 
-    elif command == 'q':
-        break
+        else:
+            print 'Invalid command. Try again.'
 
-    else:
-        print 'Invalid command. Try again.'
-
+if __name__ == '__main__':
+    main()
