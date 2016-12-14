@@ -68,7 +68,10 @@ class Corpus(object):
             If category not provided, returns the matrix of all vectorized docs.
             If include_ids is true, tuples are returned instead of matrices, as described above.
         """
-        return self._get_matrix(self._train_docs + self._test_docs, category, include_ids)
+        return self._get_matrix(
+            dict(self._train_docs.items() + self._test_docs.items()),
+            category,
+            include_ids)
 
     def complete_matrix_dict(self, include_ids=False):
         """Returns a map from category names to the corresponding complete category matrix.
@@ -87,7 +90,9 @@ class Corpus(object):
                     category --> (doc_ids, complete_category_matrix)
             if include_ids is true.
         """
-        return Corpus._get_matrix_dict(self._train_docs + self._test_docs, include_ids)
+        return Corpus._get_matrix_dict(
+            dict(self._train_docs.items() +  self._test_docs.items()), 
+            include_ids)
 
     def train_matrix(self, category=None, include_ids=False):
         """Returns the matrix of vectorized training documents.

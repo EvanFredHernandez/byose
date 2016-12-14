@@ -78,10 +78,12 @@ def precompute_vectorized_corpus():
 
     # Before computing the vectorizer, check to see if it exists.
     if exists(VECTORIZER_PATH):
-        with open(VECTORIZER_PATH, 'w') as vec:
+        with open(VECTORIZER_PATH) as vec:
             vectorizer = dill.load(vec)
     else:
         vectorizer = _tf_idf([doc for doc in raw_train_docs.values()])
+        with open(VECTORIZER_PATH, 'w') as vec:
+            dill.dump(vectorizer, vec)
 
     train_docs = {doc_id:vectorizer.transform([doc]).toarray()[0]
                   for doc_id, doc in raw_train_docs.items()}

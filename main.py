@@ -1,7 +1,8 @@
 """Run me to test the search engine!
 
-(!!!) DO NOT CHANGE ANY CODE IN THIS FILE. (!!!) """
-import corpus
+(!!!) DO NOT CHANGE ANY CODE IN THIS FILE. (!!!)
+"""
+from corpus import Corpus
 
 from search_engine import SearchEngine
 
@@ -14,7 +15,7 @@ def main():
     print """
        dBBBBBBBBBBBBBBBBBBBBBBBBb
       BP YBBBBBBBBBBBBBBBBBBBBBBBb
-     dB   YBb                 YBBBb
+     dB   YBb  ~* REUTERS *~  YBBBb
      dB    YBBBBBBBBBBBBBBBBBBBBBBBb
       Yb    YBBBBBBBBBBBBBBBBBBBBBBBb
        Yb    YBBBBBBBBBBBBBBBBBBBBBBBb        Welcome to BYOSE, a search engine for the Reuters Corpus!
@@ -50,7 +51,7 @@ def main():
                 if doc_num == 0:
                     break
                 elif doc_num > 0 and doc_num <= len(results):
-                    print corpus.document_text(results[doc_num][0])
+                    print Corpus.document_text(results[doc_num][0])
                     break
                 else:
                     print 'Bad article number. Try again.'

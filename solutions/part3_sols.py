@@ -44,9 +44,8 @@ def train_svm_classifier(A, y):
                 grad -= y[i, 0] * A[i, :].transpose()
 
         # Update the weight vector.
-        w = w - learning_rate * svm_gradient(A, w, y)
+        w = w - learning_rate * grad
     return w
-
 
 def classification_error(A, w, y):
     """Calculates the classification error for the given classifier weights.
