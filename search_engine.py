@@ -12,7 +12,7 @@ from corpus import Corpus
 class SearchEngine(object):
     """Simple search engine class for the Reuters-21578 corpus.
 
-    This is a thin wrapper about the Database class that calls on functions
+    This is a thin wrapper around the Corpus class that calls on functions
     from the lab exercises to implement search functionality.
     """
 
