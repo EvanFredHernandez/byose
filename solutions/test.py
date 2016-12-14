@@ -1,4 +1,7 @@
-"""Sanity checks for codelab solutions."""
+"""Sanity checks for codelab solutions.
+
+(!!!) DO NOT CHANGE ANY CODE IN THIS FILE. (!!!)
+"""
 import numpy as np
 import part1_sols as p1
 import part3_sols as p3

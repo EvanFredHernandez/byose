@@ -15,7 +15,7 @@ VECTORIZER_PATH = 'vectorizer.pkl'
 TRAIN_PATH = 'train.pkl'
 TEST_PATH = 'test.pkl'
 
-def tokenize(text):
+def _tokenize(text):
     """Tokenizes the given text into non-stopword, non-numeric word stems.
 
     Args:
@@ -31,7 +31,7 @@ def tokenize(text):
     ptrn = re.compile('[a-zA-Z]+')
     return [token for token in tokens if ptrn.match(token) and len(token) >= min_length]
 
-def tf_idf(docs):
+def _tf_idf(docs):
     """Computes the tf-idf vectorizer for the given document set.
 
     Args:
@@ -40,7 +40,7 @@ def tf_idf(docs):
     Returns:
         Instance of sklearn's TfidfVectorizer.
     """
-    tfidf = TfidfVectorizer(tokenizer=tokenize,
+    tfidf = TfidfVectorizer(tokenizer=_tokenize,
                             min_df=3, max_df=0.90,
                             max_features=3000, use_idf=True,
                             sublinear_tf=True, norm='l2')
@@ -81,7 +81,7 @@ def precompute_vectorized_corpus():
         with open(VECTORIZER_PATH, 'w') as vec:
             vectorizer = dill.load(vec)
     else:
-        vectorizer = tf_idf([doc for doc in raw_train_docs.values()])
+        vectorizer = _tf_idf([doc for doc in raw_train_docs.values()])
 
     train_docs = {doc_id:vectorizer.transform([doc]).toarray()[0]
                   for doc_id, doc in raw_train_docs.items()}

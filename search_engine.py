@@ -2,14 +2,12 @@
 
 (!!!) DO NOT CHANGE ANY CODE IN THIS FILE. (!!!)
 """
-import imp
 import thread
-from corpus import Corpus
+import solutions.part1_sols as p1
+import solutions.part3_sols as p3
+import solutions.part4_sols as p4
 
-p1 = imp.load_module('part1_sols', 'solutions/part1_sols')
-p2 = imp.load_module('part2_sols', 'solutions/part2_sols')
-p3 = imp.load_module('part3_sols', 'solutions/part3_sols')
-p4 = imp.load_module('part4_sols', 'solutions/part4_sols')
+from corpus import Corpus
 
 class SearchEngine(object):
     """Simple search engine class for the Reuters-21578 corpus.
@@ -20,10 +18,9 @@ class SearchEngine(object):
 
     def __init__(self):
         """Caches the vectorized corpus."""
-        self.corp = Corpus()
-        self.approx_docs = {'train': {}, 'test': {}}
-        self.one_vs_one_classifier = None
-        self.max_rank_reduction = 300
+        self._corp = Corpus()
+        self._approx_docs = {}
+        self._one_vs_one_classifier = None
 
     def approx_doc_matrices(self):
         """Performs latent semantic analysis on each training category doc matrix.
@@ -35,11 +32,12 @@ class SearchEngine(object):
 
     def _approx_doc_matrix(self, category):
         """Launches k-rank approximation for given category matrix."""
-        train_matrix = self.corp.train_matrix(category)
-        self.approx_docs['train'][category] = p1.k_rank_approximate(
-            train_matrix, self._compute_rank_reduction(train_matrix))
+        category_matrix = self._corp.complete_matrix(category)
+        self._approx_docs[category] = p1.k_rank_approximate(
+            category_matrix, SearchEngine._compute_rank_reduction(category_matrix))
 
-    def _compute_rank_reduction(self, matrix):
+    @staticmethod
+    def _compute_rank_reduction(matrix):
         """Utility method for determining the appropriate rank reduction.
 
         Args:
@@ -48,11 +46,11 @@ class SearchEngine(object):
         Returns:
             The smaller of 1/3 * m and 300.
         """
-        return min(matrix.shape[0] / 3, self.max_rank_reduction)
+        return min(matrix.shape[0] / 3, 300)
 
     def train_classifiers(self):
         """Delegates to the toolbox to train each category classifier."""
-        self.one_vs_one_classifier = p3.train_one_vs_one_classifier(self.approx_docs['train'])
+        self._one_vs_one_classifier = p3.train_one_vs_one_classifier(self._approx_docs)
 
     def search(self, query):
         """Finds 5 distinct documents that match the query.
@@ -67,7 +65,6 @@ class SearchEngine(object):
             Exception if classifiers not yet trained.
         """
         return p4.find_closest_documents(
-            self.corp.vectorize(query),
-            self.one_vs_one_classifier,
-            {cat:[self.approx_docs['train'][cat]] + [self.approx_docs['test'][cat]]
-             for cat in Corpus.all_categories()})
+            self._corp.vectorize(query),
+            self._one_vs_one_classifier,
+            self._approx_docs)

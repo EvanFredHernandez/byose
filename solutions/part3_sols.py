@@ -1,4 +1,7 @@
-"""Part 3 solutions."""
+"""Part 3 solutions.
+
+(!!!) DO NOT CHANGE ANY CODE IN THIS FILE. (!!!)
+"""
 import numpy as np
 
 def train_ls_classifier(A, y):
