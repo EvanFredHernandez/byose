@@ -58,90 +58,113 @@ class Corpus(object):
 
         Args:
             category (optional): The category to get the training matrix for.
-                If not provided, returns a complete map from category names to doc matrices.
-            include_ids (optional): If true, returns a 2-tuple (or a map from category names
-                to tuples, if category is not specified) where the first element is an
+                If not provided, returns the matrix of all documents in the corpus.
+            include_ids (optional): If true, returns a 2-tuple where the first element is an
                 array of document IDs and the second element is the category matrix. The first
                 ID in the array of IDs corresponds to the first document in the matrix, etc.
 
         Returns:
-            If category provided, returns matrix of vectorized training docs for that category.
-            If category not provided, returns map from category names to vectorized doc matrices.
+            If category provided, returns matrix of all vectorized docs for that category.
+            If category not provided, returns the matrix of all vectorized docs.
             If include_ids is true, tuples are returned instead of matrices, as described above.
         """
         return self._get_matrix(self._train_docs + self._test_docs, category, include_ids)
 
+    def complete_matrix_dict(self, include_ids=False):
+        """Returns a map from category names to the corresponding complete category matrix.
+
+        See the docstring of complete_matrix for info on what a complete document matrix is.
+
+        Args:
+            include_ids: If true, the values of the map are 2-tuples where the first
+                element is an array of document IDs and the second element is the
+                complete category matrix.
+
+        Returns:
+            Map given by
+                    category --> complete_category_matrix
+            or the map given by
+                    category --> (doc_ids, complete_category_matrix)
+            if include_ids is true.
+        """
+        return Corpus._get_matrix_dict(self._train_docs + self._test_docs, include_ids)
+
     def train_matrix(self, category=None, include_ids=False):
         """Returns the matrix of vectorized training documents.
 
-        A training matrix is one in which each row is a document vector
-        from the set of training documents. One training matrix is defined
-        for each category; that is, each document in the category's training
-        matrix belongs to that category.
+        A training matrix is one in which each row is a document vector taken
+        from the set of training documents. Each document in a specific category's
+        training matrix belongs to that category.
 
         See docstring for complete_matrix for parameter/return value details.
         """
         return Corpus._get_matrix(self._train_docs, category, include_ids)
 
+    def train_matrix_dict(self, include_ids=False):
+        """Returns a map from category names to the corresponding training matrix.
+
+        See docstring for train_matrix for info on what training matrix is.
+
+        See docstring for complete_matrix_dict for parameter/return value details.
+        """
+        return Corpus._get_matrix_dict(self._train_docs, include_ids)
+
     def test_matrix(self, category=None, include_ids=False):
         """Returns the matrix of vectorized testing documents.
 
-        A testing matrix is one in which each row is a document vector
-        from the set of testing documents. One testing matrix is defined
-        for each category; that is, each document in the category's testing
-        matrix belongs to that category.
+        A testing matrix is one in which each row is a document vector taken
+        from the set of testing documents. Each document in a specific category's
+        testing matrix belongs to that category.
 
         See docstring for complete_matrix for parameter/return value details.
         """
         return Corpus._get_matrix(self._test_docs, category, include_ids)
 
+    def test_matrix_dict(self, include_ids=False):
+        """Returns a map from category names to the corresponding testing matrix.
+
+        See docstring for test_matrix for info on what testing matrix is.
+
+        See docstring for complete_matrix_dict for parameter/return value details.
+        """
+        return Corpus._get_matrix_dict(self._test_docs, include_ids)
+
     @staticmethod
     def _get_matrix(docs, category, include_ids):
-        """Utility function that returns matrix of vectorized documents from given dictionary.
+        """Returns matrix of vectorized documents from given dictionary.
 
         See docstring for complete_matrix for parameter/return value details.
         """
         if category is None:
-            return {cat:(tup if include_ids else tup[1])
-                    for cat, tup in Corpus._as_category_matrix_dict(docs).items()}
+            ids = []
+            matrix = []
+            for doc_id, doc_vector in docs.items():
+                ids.append(doc_id)
+                matrix.append(doc_vector)
         elif not category in reuters.categories():
             raise Exception('No such category: ' + category)
         else:
-            tup = Corpus._as_category_matrix(docs, category)
-            return tup if include_ids else tup[1]
+            ids = []
+            matrix = []
+            for doc_id, doc_vector in docs.items():
+                if category in reuters.categories(doc_id):
+                    ids.append(doc_id)
+                    matrix.append(doc_vector)
+        matrix = np.mat(matrix)
+        return (ids, matrix) if include_ids else matrix
 
     @staticmethod
-    def _as_category_matrix(docs, category):
-        """Returns matrix where rows are doc vectors belonging to the given category.
-
-        Args:
-            docs: Map given by doc_id --> doc_vector.
-            category: Category to which all doc vectors in the matrix will belong.
-
-        Returns:
-            Tuple given by (doc_ids_array, doc_matrix).
-        """
-        ids = []
-        matrix = []
-        for doc_id, doc in docs.items():
-            if category in reuters.categories(doc_id):
-                ids.append(doc_id)
-                matrix.append(doc)
-        return (ids, np.mat(matrix))
-
-    @staticmethod
-    def _as_category_matrix_dict(docs):
-        """Maps each category to a list of documents under that category.
-
-        Args:
-            docs: Map given by doc_id --> doc_vector.
-
-        Returns:
-            Map given by category --> (doc_ids_array, doc_matrix).
+    def _get_matrix_dict(docs, include_ids):
+        """Returns a dict from categories to the corresponding given docs.
+        
+        See docstring for complete_matrix_dict for parameter/return value details.
         """
         docs_by_category = {category:([], []) for category in reuters.categories()}
         for doc_id, doc_vector in docs.items():
             for category in reuters.categories(doc_id):
                 docs_by_category[category][0].append(doc_id)
                 docs_by_category[category][1].append(doc_vector)
-        return {cat:(tup[0], np.mat(tup[1])) for cat, tup in docs_by_category.items()}
+        docs_by_category = {cat:(tup[0], np.mat(tup[1]))
+                            for cat, tup in docs_by_category.items()}
+        return {cat:(tup if include_ids else tup[1])
+                for cat, tup in docs_by_category.items()}
