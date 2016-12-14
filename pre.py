@@ -54,10 +54,6 @@ def precompute_vectorized_corpus():
     Reuters corpus in a pickle file. To redo these computations, simply delete
     the vectorizer.pkl, train.pkl, and test.pkl files in the current directory.
 
-    Note that this precomputation follows an "all-or-nothing" schema. That is,
-    either all three components have been cached, or the computation will
-    be restarted from scratch.
-
     Returns:
         A tuple given by (vectorizer, train_docs, test_docs)
             vectorizer: TfidfVectorizer
@@ -80,15 +76,20 @@ def precompute_vectorized_corpus():
         else:
             raw_test_docs[doc_id] = reuters.raw(doc_id)
 
-    vectorizer = tf_idf([doc for doc in raw_train_docs.values()])
+    # Before computing the vectorizer, check to see if it exists.
+    if exists(VECTORIZER_PATH):
+        with open(VECTORIZER_PATH, 'w') as vec:
+            vectorizer = dill.load(vec)
+    else:
+        vectorizer = tf_idf([doc for doc in raw_train_docs.values()])
+
     train_docs = {doc_id:vectorizer.transform([doc]).toarray()[0]
                   for doc_id, doc in raw_train_docs.items()}
     test_docs = {doc_id:vectorizer.transform([doc]).toarray()[0]
                  for doc_id, doc in raw_test_docs.items()}
 
     # Cache the vectorized corpus.
-    with open(VECTORIZER_PATH, 'w') as vec, open(TRAIN_PATH, 'w') as train, open(TEST_PATH, 'w') as test:
-        dill.dump(vectorizer, vec)
+    with open(TRAIN_PATH, 'w') as train, open(TEST_PATH, 'w') as test:
         dill.dump(train_docs, train)
         dill.dump(test_docs, test)
 
