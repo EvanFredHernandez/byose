@@ -41,6 +41,8 @@ def test_unweighted_knn(corp):
     data = corp.complete_matrix()
     print len(data)
     print data.shape
+    
+
 
     return
 
