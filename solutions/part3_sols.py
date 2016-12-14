@@ -2,7 +2,9 @@
 
 (!!!) DO NOT CHANGE ANY CODE IN THIS FILE. (!!!)
 """
+import itertools
 import numpy as np
+import operator
 
 def train_ls_classifier(A, y):
     """Trains the document category classifier by minimizing L2-regularized least squares loss.
@@ -16,7 +18,7 @@ def train_ls_classifier(A, y):
     """
     w = np.zeros((A.shape[1], 1))
     num_iterations = 10000
-    learning_rate = 0.01
+    learning_rate = 0.001
     regularization_weight = 0.1
     for i in range(num_iterations):
         z = w - learning_rate * A.transpose() * (A * w - y)
@@ -42,7 +44,6 @@ def train_svm_classifier(A, y):
         for i in range(A.shape[0]):
             if y[i] * A[i] * w < 1:
                 grad -= y[i, 0] * A[i, :].transpose()
-
         # Update the weight vector.
         w = w - learning_rate * grad
     return w
@@ -70,29 +71,33 @@ def train_one_vs_one_classifier(category_train_documents):
         A dict of dicts, where dict['category_1']['category_2'] is the weight vector
         that represents the one-vs-one classifier for category_1 and category_2.
     """
-    category_classifiers = {}
-    for cat_1 in category_train_documents.keys():
-        category_classifiers[cat_1] = {}
-        for cat_2 in [c for c in category_train_documents.keys() if c != cat_1]:
-            A = np.mat(np.concatenate((
-                category_train_documents[cat_1],
-                category_train_documents[cat_2])))
-            y = np.concatenate((
-                np.ones((category_train_documents[cat_1].shape[0], 1)),
-                -np.ones((category_train_documents[cat_2].shape[0], 1))))
-            w = train_svm_classifier(A, y)
-            category_classifiers[cat_1][cat_2] = w
+    category_classifiers = []
+    for cat_1, cat_2 in itertools.combinations(category_train_documents.keys()):
+        print 'Now training classifier for', cat_1, 'and', cat_2
+        train_1 = category_train_documents[cat_1]
+        train_2 = category_train_documents[cat_2]
+        A = np.concatenate((train_1, train_2))
+        y = np.concatenate((np.ones((train_1.shape[0], 1)),
+                            -np.ones((train_2.shape[0], 1))))
+        category_classifiers.append((train_svm_classifier(A, y), cat_1, cat_2))
     return category_classifiers
 
-# TODO: Implement this method!
-def classify(one_vs_one_classifier, doc):
+def classify(one_vs_one_classifiers, doc):
     """Given a one-vs-one classifier schema, classifies the example.
 
     Args:
-        one_vs_one_classifier: The one-vs-one classifier schema.
+        one_vs_one_classifiers: The one-vs-one classifier schema.
         doc: The vectorized document to classify.
 
     Returns:
         A 3-tuple of the three majority-vote categories.
     """
-    return ('best_category', 'second_best_category', 'third_best_category')
+    votes = {}
+    for classifier, cat_1, cat_2 in one_vs_one_classifiers.items():
+        prediction = np.sign(np.inner(doc, classifier)[0])
+        if prediction == 1:
+            votes[cat_1] = 0 if cat_1 not in votes else votes[cat_1] + 1
+        else:
+            votes[cat_2] = 0 if cat_2 not in votes else votes[cat_2] + 1
+    best = sorted(votes.items(), key=operator.itemgetter(1), reverse=True)
+    return (best[0][0], best[1][0], best[2][0])
