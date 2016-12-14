@@ -50,7 +50,7 @@ def main():
                 if doc_num == 0:
                     break
                 elif doc_num > 0 and doc_num <= len(results):
-                    print corpus.document_text(results[doc_num][0])
+                    print corpus.Corpus.document_text(results[doc_num][0])
                     break
                 else:
                     print 'Bad article number. Try again.'
