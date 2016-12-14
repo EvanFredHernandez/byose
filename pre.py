@@ -1,8 +1,10 @@
-""" (!!!) DO NOT CHANGE ANY CODE IN THIS FILE. (!!!) """
+"""Functions for running expensive computations.
+
+(!!!) DO NOT CHANGE ANY CODE IN THIS FILE. (!!!) 
+"""
 from os.path import exists
 import re
 import dill
-import numpy as np
 
 from nltk import word_tokenize
 from nltk.stem.porter import PorterStemmer
