@@ -1,4 +1,7 @@
-"""Part 2 solutions."""
+"""Part 2 solutions.
+
+(!!!) DO NOT CHANGE ANY CODE IN THIS FILE. (!!!)
+"""
 import numpy as np
 
 # TODO: Implement this method!

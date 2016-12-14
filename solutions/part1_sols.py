@@ -1,4 +1,7 @@
-"""Part 1 solutions."""
+"""Part 1 solutions.
+
+(!!!) DO NOT CHANGE ANY CODE IN THIS FILE. (!!!)
+"""
 import numpy as np
 
 def k_rank_approximate(doc_matrix, k):
