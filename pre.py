@@ -1,6 +1,6 @@
 """Functions for running expensive computations.
 
-(!!!) DO NOT CHANGE ANY CODE IN THIS FILE. (!!!) 
+(!!!) DO NOT CHANGE ANY CODE IN THIS FILE. (!!!)
 """
 from os.path import exists
 import re
@@ -53,6 +53,10 @@ def precompute_vectorized_corpus():
     After running the first time, this initializer caches the vectorized
     Reuters corpus in a pickle file. To redo these computations, simply delete
     the vectorizer.pkl, train.pkl, and test.pkl files in the current directory.
+
+    Note that this precomputation follows an "all-or-nothing" schema. That is,
+    either all three components have been cached, or the computation will
+    be restarted from scratch.
 
     Returns:
         A tuple given by (vectorizer, train_docs, test_docs)

@@ -1,4 +1,7 @@
-""" (!!!) DO NOT CHANGE ANY CODE IN THIS FILE. (!!!) """
+"""Defines a simple search engine for the Reuters-21578 corpus.
+
+(!!!) DO NOT CHANGE ANY CODE IN THIS FILE. (!!!)
+"""
 import imp
 import thread
 from corpus import Corpus
@@ -9,7 +12,7 @@ p3 = imp.load_module('part3_sols', 'solutions/part3_sols')
 p4 = imp.load_module('part4_sols', 'solutions/part4_sols')
 
 class SearchEngine(object):
-    """Simple search engine for the Reuters-21578 corpus.abs
+    """Simple search engine class for the Reuters-21578 corpus.
 
     This is a thin wrapper about the Database class that calls on functions
     from the lab exercises to implement search functionality.
