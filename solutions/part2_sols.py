@@ -2,73 +2,81 @@
 
 (!!!) DO NOT CHANGE ANY CODE IN THIS FILE. (!!!)
 """
+import numpy as np
+import heapq
 import os
 import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
-import numpy as np
 import corpus
-import argparse
+
+N_LARGEST = 4
+VERBOSE = False
 
 # TODO: Implement this method!
-def unweighted_knn(doc_matrix, doc_vector, k):
+def knn(doc_matrix, ids, doc_vector, k):
     """Clusters the documents into k distinct groups.
 
     Args:
         doc_matrix: An (n, m) matrix where each row is a vectorized document.
+        ids: An (n, 1) vector where the ith element in ids is the corresponding id
+        for the ith row in doc_matrix.abs
+        doc_vector: An (m, 1) vector that represnts a vectorized document. 
         k: The number of clusters to create.
+
+    Returns:
+        List of unique categories of the k nearest neighbors of the doc_vector
+
     """
-    
-    return 
 
-# TODO: Implement this method!
-def weighted_knn(doc_matrix, doc_vector, k):
-    """Clusters the documents into k distinct groups.
+    best = []
+    for i in range(k):
+        heapq.heappush(best, (-float("inf"), (i, None)))
 
-    Args:
-        doc_matrix: An (n, m) matrix where each row is a vectorized document.
-        k: The number of clusters to create.
-    """
-    
-    return
+    for i in range(len(doc_matrix)):
+        dot = -np.linalg.norm(doc_matrix[i] - doc_vector) ** 2
+        end_priority, end_item = best[0]
+        if dot > end_priority and dot < -.01:
+            heapq.heapreplace(best, (dot, (i, ids[i])))
 
-def test_unweighted_knn(corp):
-    """ Tests the unweighted_knn classification function. Implement this however you like.
+    n_largest = heapq.nlargest(N_LARGEST, best)
+
+    if VERBOSE: 
+        for i in range(N_LARGEST):
+            print(n_largest[i])
+            print(ids[n_largest[i][1][0]])
+            print(corpus.Corpus.document_text(n_largest[i][1][1]))
+
+    categories = []
+
+    for i in range(k):
+        categories.extend(corpus.Corpus.categories_of(best[i][1][1]))
+
+    categories = set(categories)
+
+    return categories
+
+def test_knn(corp):
+    """ Tests the knn classification function. Implement this however you like.
 
     Args: 
         corp: A Corpus object
 
     """
-    data = corp.complete_matrix()
-    print len(data)
-    print data.shape
-    
+    ids, complete_matrix = corp.complete_matrix(include_ids=True)
+    category_map = corp.complete_matrix_dict()
+    categories = category_map.keys()
+    errors = 0
+    document_count = 0
 
-
-    return
-
-
-def test_weighted_knn(corp):
-    """ Tests the weighted_knn classification function. Implement this however you like.
-
-    Args:
-        corp: A Corpus object
-    
-    """
-    data = corp.complete_matrix()
-    return
+    for _, category in enumerate(categories):
+        documents_in_category = category_map[category]
+        for i in range(len(documents_in_category)):
+            print(document_count)
+            document_count += 1
+            if not category in knn(complete_matrix, ids, documents_in_category[i], 10):
+                errors += 1
+        print (errors, float(errors) / document_count, category)
+                
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument("weight", help="(w)eighted or (u)nweighted")
-    args = parser.parse_args()
-
-    corp = corpus.Corpus()
-
-    if args.weight == "u":
-        print "unweighted_knn"
-        test_unweighted_knn(corp)
-    elif args.weight == "w":
-        test_weighted_knn(corp)
-        print "weighted_knn"
-    else:
-        print "not an option"
+    test_knn(corpus.Corpus())
