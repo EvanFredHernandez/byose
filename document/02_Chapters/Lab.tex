@@ -2,102 +2,41 @@
 %%% You can use special characters just like ä,ü and ñ
 
 \chapter{Lab}
+Welcome to the lab where you?ll be building your own search engine! In this lab, you?ll be using the Reuters corpus which is the most widely used text collection for text categorization research. It has 21,578 documents, each labeled with multiple categories making this text classification different than regular single class classification. The lab will require you to program basic functions for a search engine like low-rank approximation, classification using least squares, k-nearest neighbors, and support vector machines (for comparison), in addition to a final search function that brings all of this together.
 
-\Blindtext[1][1]
+\section{Setup}
+First, you will need to download our skeleton code and make sure you have the required software and libraries to run it. We used Python 2.7.11, pip 9.0.1, <version of nltk, dill, etc. on evans computer, matplotlib> on OSX 10.0.1, but these versions for Python and pip are by no means a strict requirement. If you do run into problems, we recommend that you just upgrade to the latest versions of pip and Python 2.7. The installation steps are as follows:
+\begin{enumerate}
+\item{Install Python and pip. You can find links in the appendix if you need help in installing either of these.}
+\item{Install Python libraries dill, nltk, sklearn, and numpy through pip.}
+\item{Download the data by running python -m nltk.downloader punkt stopwords reuters or by using nltk.downloader() from within Python and installing the punkt, stopwords, and reuters data.}
+\item{Finally, you?ll need the code we?ve provided, which you can find in the appendix or at https://github.com/EvanFredHernandez/byose. Once you?ve obtained the code, run setup.py, which will take quite a bit (less than an hour) to run.}
+\end{enumerate}
 
-\begin{figure}[H]
-\centering
-	\includegraphics[width=0.9\textwidth]%
-	{03_GraphicFiles/CowLickingNose.jpg}%
-\caption[A cow]{A cow licking its nose. Usage with permission of the photographer \textsc{Nicole Barth}, taken from \url{www.flickr.com/photos/46311827@N07/14885545396}.}
-\label{fig:CowLickingNose}
-\end{figure}
+\section{Warmup}
+\begin{enumerate}
+\item{Get the document vector with the document id ?training/309? using the document_vector(doc_id) function of a Corpus instance. The ?training/309? document is about gold mines in South Africa. The document vector is long, but take a look and explain what the vector represents (what do the columns correspond to?) and why there are so many zeros. If you?re curious about the content of the document, you can call the static method document_text(doc_id) to have a look.}
+\item{Now get the document vectors for ?training/309? and  ?training/448? and compute the dot product between them. The  ?training/448? document is about Brazilian gold mines. Now compute the dot product between ?training/309?  and ?training/3358?  and compare this result to the previous. The ?training/3358? document is about agriculture and cereal ingredients. What do the dot products mean? Do the results make sense, relative to each other?}
+\item{Now suppose that you have a matrix X that?s composed of stacked document vectors, like the ones you retrieved in the preceding parts. What would be the meaning of a matrix X*XT and each of its elements? What about XT*X?}
+\end{enumerate}
 
-In \figurename~\ref{fig:CowLickingNose}\myMarginnote{Reference to a figure} you see a cow that is licking its nose. The picture was taken by Nicole Barth on 11.08.2014 using a Canon EOS 500D. The original file has a resolution of $4247 \times 2831$ pixels.
-
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-axis lines = middle,
-enlargelimits = true,
-xlabel = {$x$},
-ylabel = {$y$},
-trig format plots = rad,
-width = 0.9\textwidth,
-height= 80mm,
-title style={font=\bfseries,align=center,text width=0.7\textwidth},
-title = {Example Diagram with a Line Break in the Title (using the \texttt{text width} option in the \texttt{title style})},
-]
-\addplot[myColorMainA,domain=0:9, line width=1pt, smooth]
-{0.2*x^2};
-\addplot[myColorMainB,domain=0:9, line width=1pt, smooth]
-{5*sin(x)};
-\end{axis}
-\end{tikzpicture}
-\caption[Scientific diagram]{A scientific diagram using the \texttt{pgfplots} package by \textsc{Christian Feuersaenger} using the same colors which are also used for the layout.}
-\label{fig:ScientificDiagram}
-\end{figure}
-
-\Blindtext[2][2]
-
-\begin{table}[H]
-\centering
-\begin{tabular}{@{}llr@{}} \toprule
-\multicolumn{2}{c}{Item} \\ \cmidrule(r){1-2}
-Animal & Description & Price (\$)\\ \midrule
-Gnat & per gram & 13.65 \\
-& each & 0.01 \\
-Gnu & stuffed & 92.50 \\
-Emu & stuffed & 33.33 \\
-Armadillo & frozen & 8.99 \\ \bottomrule
-\end{tabular}
-\caption[Small table]{A small table created with the \texttt{booktabs} package (example taken from the package documentation).}
-\end{table}
-
-
-\Blindtext[2][1]
-
-\section{Example Section}
-
-\Blindtext[3][2]
-
-\blinditemize
-
-\section{Another Example Section}
-
-\Blindtext[3][1]
-
-\blindenumerate
-
-\subsection{Example Sub-Section}
-
-\blindmathpaper
-
-\begin{figure}[H]
-\centering
-	\includegraphics[]%
-	{03_GraphicFiles/CowLickingNoseSquare.jpg}%
-\caption[A cow (square)]{A cow licking its nose -- picture in square format in a native (low) resolution $150 \times 150$ pixels @ 72~dpi ($\approx 2.1$ inch). No scaling in \LaTeX{} using options in \texttt{\textbackslash includegraphics} is applied. Zoom in and see how ugly this is. See \figurename~\ref{fig:CowLickingNose} for reference.}.
-\label{fig:CowLickingNoseSquare}
-\end{figure}
-
-\subsection{Another Example Sub-Section}
-
-\Blindtext[2][1]
-
-\subsubsection{Another Sub-Sub-Section}
-
-\blindmathpaper
-
-\paragraph{Example Paragraph}
-
-\Blindtext[2][1]
-
-\subparagraph{Example Sub-Paragraph}
-
-\Blindtext[2][1]
-
-\section{Yet Another Example Section}
-
-\Blindtext[2][1]
+\section{Build Your Own Search Engine}
+You should now understand the data model and our implementation of it, so you are finally ready to create your search engine! 
+\begin{enumerate}
+\item{Implement k-rank approximation. In the test method, use your function to find the rank 2 approximation of [[1, 2, 3, 4], [2, 3, 4, 5], [3, 4, 5, 6]]. We?ll use this method later.}
+\item{Let?s try categorizing documents the old-fashioned way and use k-nearest neighbors.
+	\begin{enumerate}
+	\item{Implement the knn function. Since the document vector could be in the document matrix, be sure to not count the document vector when found in the document matrix as a nearest neighbor.}
+	\item{Find document 'training/1684' and read the text. Then find its 3 nearest neighbors (not including itself) and read the text of those documents. Are they similar? Does this make sense?}
+	\item{Now test the accuracy of knn by implementing test_knn. For each category, take all documents in that category, classify each of them, and check to see if the category is in the classification.}
+	\end{enumerate}
+}
+\item{We will now implement the classification component of the lab.
+	\begin{enumerate}
+	\item{Implement train_ls_classifier (with ridge regularization) and compute_categorization_error. Use your favorite iterative method for the first. Choose num_iterations=10000, lambda = 0.001, gamma = 0.001. Train on two very similar categories (coconut vs. coconut_oil) and two very different categories (coconut vs. copper). Which performed better? Why?}
+	\item{Implement train_svm_classifier using gradient descent. Use L2 regularization for the sake of comparison. Train on same categories as above. How do your results compare to the least squares classifier?}
+	\item{Use these functions to implement the functions train_one_vs_one_classifier and one_vs_one_classify. We will represent one-vs-one classifiers as the tuple (<weights>, <+1 category>, <-1 category>). Note: Make sure you are computing k(k-1)/2 classifiers and NOT k^2 classifiers.}
+	\end{enumerate}
+}
+\item{Finally, write the search function and then test it out! Run main.py with a few of your own queries. You can also try ?bahia cocoa zone.? How does it work?}
+\end{enumerate}
