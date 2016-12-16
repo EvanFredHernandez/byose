@@ -1,0 +1,5 @@
+[0] Config.pm:324> INFO - This is Biber 2.1
+[1] Config.pm:327> INFO - Logfile is 'MainFile.blg'
+[59] biber-MSWIN:273> INFO - === %a %b %e, %Y, %H:%M:%S
+[220] Utils.pm:162> ERROR - Cannot find control file 'MainFile.bcf'! - did you pass the "backend=biber" option to BibLaTeX?
+[220] Biber.pm:110> INFO - ERRORS: 1

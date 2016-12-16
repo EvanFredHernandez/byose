@@ -3,39 +3,44 @@
 
 \chapter{Lab}
 Welcome to the lab where you?ll be building your own search engine! In this lab, you?ll be using the Reuters corpus which is the most widely used text collection for text categorization research. It has 21,578 documents, each labeled with multiple categories making this text classification different than regular single class classification. The lab will require you to program basic functions for a search engine like low-rank approximation, classification using least squares, k-nearest neighbors, and support vector machines (for comparison), in addition to a final search function that brings all of this together.
-
+\\\\
+<how the search engine will work>
+\\\\
+<what the skeleton looks like>
 \section{Setup}
-First, you will need to download our skeleton code and make sure you have the required software and libraries to run it. We used Python 2.7.11, pip 9.0.1, <version of nltk, dill, etc. on evans computer, matplotlib> on OSX 10.0.1, but these versions for Python and pip are by no means a strict requirement. If you do run into problems, we recommend that you just upgrade to the latest versions of pip and Python 2.7. The installation steps are as follows:
+First, you will need to download our skeleton code and make sure you have the required software and libraries to run it. We used Python 2.7.11 and pip 9.0.1 on OSX 10.0.1, but these versions for Python and pip are not strictly required. If you do run into problems, we recommend that you just upgrade to the latest versions of pip and Python 2.7. The installation steps are as follows:
 \begin{enumerate}
-\item{Install Python and pip. You can find links in the appendix if you need help in installing either of these.}
+\item{Install Python and pip. If you need help, look \url[https://wiki.python.org/moin/BeginnersGuide/Download]{here} and \url[https://pip.pypa.io/en/stable/installing/]{here}.}
 \item{Install Python libraries dill, nltk, sklearn, and numpy through pip.}
-\item{Download the data by running python -m nltk.downloader punkt stopwords reuters or by using nltk.downloader() from within Python and installing the punkt, stopwords, and reuters data.}
-\item{Finally, you?ll need the code we?ve provided, which you can find in the appendix or at https://github.com/EvanFredHernandez/byose. Once you?ve obtained the code, run setup.py, which will take quite a bit (less than an hour) to run.}
+\item{Download the data by running \code{python -m nltk.downloader punkt stopwords reuters} or by using \code{nltk.downloader()} from within Python and installing the punkt, stopwords, and reuters datasets.}
+\item{Finally, you?ll need the code we?ve provided, which you can find in the appendix or at \url{https://github.com/EvanFredHernandez/byose}.}
 \end{enumerate}
 
 \section{Warmup}
 \begin{enumerate}
-\item{Get the document vector with the document id ?training/309? using the document_vector(doc_id) function of a Corpus instance. The ?training/309? document is about gold mines in South Africa. The document vector is long, but take a look and explain what the vector represents (what do the columns correspond to?) and why there are so many zeros. If you?re curious about the content of the document, you can call the static method document_text(doc_id) to have a look.}
+\item{Get the document vector with the document id ?training/309? using the \code{document\_vector} function of a Corpus instance. The ?training/309? document is about gold mines in South Africa. The document vector is long, but take a look and explain what the vector represents (what do the columns correspond to?) and why there are so many zeros. If you?re curious about the content of the document, you can call the static method \code{document\_text(doc\_id)} to have a look.}
 \item{Now get the document vectors for ?training/309? and  ?training/448? and compute the dot product between them. The  ?training/448? document is about Brazilian gold mines. Now compute the dot product between ?training/309?  and ?training/3358?  and compare this result to the previous. The ?training/3358? document is about agriculture and cereal ingredients. What do the dot products mean? Do the results make sense, relative to each other?}
-\item{Now suppose that you have a matrix X that?s composed of stacked document vectors, like the ones you retrieved in the preceding parts. What would be the meaning of a matrix X*XT and each of its elements? What about XT*X?}
+\item{Now suppose that you have a matrix $X$ that?s composed of stacked document vectors, like the ones you retrieved in the preceding parts. What would be the meaning of a matrix $XX^\intercal$ and each of its elements? What about $X^\intercal X$?}
 \end{enumerate}
 
 \section{Build Your Own Search Engine}
-You should now understand the data model and our implementation of it, so you are finally ready to create your search engine! 
+You will now implement the functions used by the search engine. 
 \begin{enumerate}
 \item{Implement k-rank approximation. In the test method, use your function to find the rank 2 approximation of [[1, 2, 3, 4], [2, 3, 4, 5], [3, 4, 5, 6]]. We?ll use this method later.}
 \item{Let?s try categorizing documents the old-fashioned way and use k-nearest neighbors.
 	\begin{enumerate}
-	\item{Implement the knn function. Since the document vector could be in the document matrix, be sure to not count the document vector when found in the document matrix as a nearest neighbor.}
-	\item{Find document 'training/1684' and read the text. Then find its 3 nearest neighbors (not including itself) and read the text of those documents. Are they similar? Does this make sense?}
-	\item{Now test the accuracy of knn by implementing test_knn. For each category, take all documents in that category, classify each of them, and check to see if the category is in the classification.}
+	\item{Implement the \code{knn} function. Since the document vector could be in the document matrix, be sure to not count the document vector when found in the document matrix as a nearest neighbor.}
+	\item{Find document with ID 'training/1684' and read the text. Then use the \code{knn} function to find its 3 nearest neighbors (not including itself) and read the text of those documents. Are they similar? Does these results make sense?}
+	\item{Now test the accuracy of your \code{knn} function by implementing \code{test\_knn}. For each category, take all documents in that category, classify each of them, and check to see if the category is in the classification.}
 	\end{enumerate}
 }
 \item{We will now implement the classification component of the lab.
 	\begin{enumerate}
-	\item{Implement train_ls_classifier (with ridge regularization) and compute_categorization_error. Use your favorite iterative method for the first. Choose num_iterations=10000, lambda = 0.001, gamma = 0.001. Train on two very similar categories (coconut vs. coconut_oil) and two very different categories (coconut vs. copper). Which performed better? Why?}
-	\item{Implement train_svm_classifier using gradient descent. Use L2 regularization for the sake of comparison. Train on same categories as above. How do your results compare to the least squares classifier?}
-	\item{Use these functions to implement the functions train_one_vs_one_classifier and one_vs_one_classify. We will represent one-vs-one classifiers as the tuple (<weights>, <+1 category>, <-1 category>). Note: Make sure you are computing k(k-1)/2 classifiers and NOT k^2 classifiers.}
+	\item{Implement \code{train\_ls\_classifier} (with ridge regularization) and \code{compute\_categorization\_error}. Use your favorite iterative method for the first. Use 10000 iterations, with $\lambda = 0.001$ and $\gamma = 0.001$. Train on two very similar categories (coconut vs. coconut\_oil) and two very different categories (coconut vs. copper). Which performed better? Why?
+	}
+	\item{Implement \code{train\_svm\_classifier} using gradient descent. Use L2 regularization for the sake of comparison. Train on same categories as above. How do your results compare to the least squares classifier?}
+	\item{Use these functions to implement the functions \code{train\_one\_vs\_one\_classifier} and \code{one\_vs\_one\_classify}. We will represent one-vs-one classifiers as the tuple (<weights>, <+1 category>, <-1 category>). Note: Make sure you are computing $k(k-1)/2$ classifiers and NOT $k^2$ classifiers.
+	}
 	\end{enumerate}
 }
 \item{Finally, write the search function and then test it out! Run main.py with a few of your own queries. You can also try ?bahia cocoa zone.? How does it work?}
