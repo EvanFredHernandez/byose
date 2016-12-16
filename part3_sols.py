@@ -21,7 +21,7 @@ def train_ls_classifier(A, y):
     w = np.zeros((A.shape[1], 1))
     num_iterations = 10000
     learning_rate = 0.001
-    regularization_weight = 0.1
+    regularization_weight = 0.01
     for i in range(num_iterations):
         z = w - learning_rate * A.transpose() * (A * w - y)
         w = (1/(1 + learning_rate * regularization_weight)) * z
@@ -39,14 +39,15 @@ def train_svm_classifier(A, y):
     """
     w = np.zeros((A.shape[1], 1))
     num_iterations = 10000
-    learning_rate = 0.01
+    learning_rate = 0.001
+    regularization_weight = 0.01
     for i in range(num_iterations):
         # Compute the gradient.
         grad = np.zeros((A.shape[1], 1))
         for i in range(A.shape[0]):
             if y[i] * A[i] * w < 1:
                 grad -= y[i, 0] * A[i, :].transpose()
-        grad -= 2 * w
+        grad -= regularization_weight * 2 * w
         # Update the weight vector.
         w = w - learning_rate * grad
     return w

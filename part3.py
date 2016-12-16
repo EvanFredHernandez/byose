@@ -2,7 +2,7 @@
 
 Implement each of the functions in this file as instructed in the lab document.
 """
-import numpy as np
+from corpus import Corpus
 
 # TODO: Implement this method!
 def train_ls_classifier(A, y):
@@ -15,11 +15,11 @@ def train_ls_classifier(A, y):
     Returns:
         An (m, 1) vector of the optimal classification weights.
     """
-    return np.zeros(A.size[1], 1)
+    return []
 
 # TODO: Implement this method!
 def train_svm_classifier(A, y):
-    """Trains the document category classifer by minimizing the hinge loss.
+    """Trains the document category classifer by minimizing L2-regularized hinge loss.
 
     Args:
         A: An (n, m) matrix of training data where the rows are document vectors.
@@ -28,7 +28,7 @@ def train_svm_classifier(A, y):
     Returns:
         An (m, 1) vector of the optimal classification weights.
     """
-    return np.zeros(A.size[1], 1)
+    return []
 
 # TODO: Implement this method!
 def classification_error(A, w, y):
@@ -58,14 +58,47 @@ def train_one_vs_one_classifier(category_train_documents):
     return {}
 
 # TODO: Implement this method!
-def classify(one_vs_one_classifier, doc):
+def classify(one_vs_one_classifiers, doc):
     """Given a one-vs-one classifier schema, classifies the example.
 
     Args:
-        one_vs_one_classifier: The one-vs-one classifier schema.
+        one_vs_one_classifiers: The one-vs-one classifier schema.
         doc: The vectorized document to classify.
 
     Returns:
-        A 3-tuple of the three majority-vote categories.
+        A 2-tuple of the two majority-vote categories.
     """
-    return ('best_category', 'second_best_category', 'third_best_category')
+    return (0, 0)
+
+# TODO: Implement this method!
+def test_ls_classifier(corpus):
+    """Test your LS classifier!
+
+    First, train an LS classifier to distinguish between the coconut and coconut_oil
+    categories. How does it perform on the testing data? Then train another LS classifier
+    to distinguish between the coconut and copper categories. Again, how does it perform?
+    Why do you see these results?
+
+    Args:
+        corpus: A corpus object, used for convenient access to the Reuters corpus.
+    """
+    return
+
+# TODO: Implement this method!
+def test_svm_classifier(corpus):
+    """Test your SVM classifier!
+
+    Train an SVM classifier for the two pairs of categories given above. How does it compare
+    to the LS classifier?
+
+    Args:
+        corpus: A corpus object, used for convenient access to the Reuters corpus.
+    """
+    return
+
+if __name__ == '__main__':
+    corpus = Corpus()
+    print 'Testing LS classifier!'
+    test_ls_classifier(corpus)
+    print 'Testing SVM classifier!'
+    test_svm_classifier(corpus)

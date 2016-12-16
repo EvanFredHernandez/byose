@@ -2,19 +2,17 @@
 
 (!!!) DO NOT CHANGE ANY CODE IN THIS FILE. (!!!)
 """
-import numpy as np
 import heapq
 import os
 import sys
-
-sys.path.insert(1, os.path.join(sys.path[0], '..'))
+import numpy as np
 from corpus import Corpus
 
 N_LARGEST = 4
 VERBOSE = False
 
 def knn(doc_matrix, ids, doc_vector, k):
-    """Finds the k most similar documents in the document matrix to the given document vector.
+    """Finds the k most similar docs in the doc matrix to the given doc vector.
 
     Args:
         doc_matrix: An (n, m) matrix where each row is a vectorized document.
