@@ -42,6 +42,7 @@ def main():
 
             print 'Training classifiers...'
             engine.train_classifiers()
+
         elif command == 's':
             results = engine.search(raw_input('Query: '))
             for (i, result) in enumerate(results):
@@ -51,7 +52,7 @@ def main():
                 if doc_num == 0:
                     break
                 elif doc_num > 0 and doc_num <= len(results):
-                    print Corpus.document_text(results[doc_num][0])
+                    print Corpus.document_text(results[doc_num-1][0])
                     break
                 else:
                     print 'Bad article number. Try again.'

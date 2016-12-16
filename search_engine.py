@@ -3,9 +3,9 @@
 (!!!) DO NOT CHANGE ANY CODE IN THIS FILE. (!!!)
 """
 import thread
-import solutions.part1_sols as p1
-import solutions.part3_sols as p3
-import solutions.part4_sols as p4
+import part1_sols as p1
+import part3_sols as p3
+import part4_sols as p4
 
 from corpus import Corpus
 
@@ -20,6 +20,7 @@ class SearchEngine(object):
         """Caches the vectorized corpus."""
         self._corp = Corpus()
         self._approx_docs = {}
+        self._doc_ids = {}
         self._one_vs_one_classifier = None
 
     def approx_doc_matrices(self):
@@ -32,9 +33,10 @@ class SearchEngine(object):
 
     def _approx_doc_matrix(self, category):
         """Launches k-rank approximation for given category matrix."""
-        category_matrix = self._corp.complete_matrix(category)
+        category_data = self._corp.complete_matrix(category, include_ids=True)
+        self._doc_ids[category] = category_data[0]
         self._approx_docs[category] = p1.k_rank_approximate(
-            category_matrix, SearchEngine._compute_rank_reduction(category_matrix))
+            category_matrix, SearchEngine._compute_rank_reduction(category_data[1]))
 
     @staticmethod
     def _compute_rank_reduction(matrix):
@@ -67,4 +69,5 @@ class SearchEngine(object):
         return p4.find_closest_documents(
             self._corp.vectorize(query),
             self._one_vs_one_classifier,
-            self._approx_docs)
+            self._approx_docs,
+            self._doc_ids)
