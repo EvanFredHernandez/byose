@@ -28,10 +28,10 @@ def knn(doc_matrix, ids, doc_vector, k):
         heapq.heappush(best, (-float("inf"), (i, None)))
 
     for i in range(len(doc_matrix)):
-        dot = -np.linalg.norm(doc_matrix[i] - doc_vector) ** 2
+        distance = -np.linalg.norm(doc_matrix[i] - doc_vector) ** 2
         end_priority, _ = best[0]
-        if dot > end_priority and dot < -.01:
-            heapq.heapreplace(best, (dot, (i, ids[i])))
+        if distance > end_priority and distance < -.01:
+            heapq.heapreplace(best, (distance, (i, ids[i])))
 
     n_largest = heapq.nlargest(N_LARGEST, best)
 
