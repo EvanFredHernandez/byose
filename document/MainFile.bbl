@@ -1,3 +1,25 @@
-\begin{thebibliography}{}
+\begin{thebibliography}{1}
+
+\bibitem{BYOSE:1}
+Dictionary.com, ``http://www.dictionary.com/browse/document,'' {\em Random
+  House Dictionary}, 2016.
+
+\bibitem{BYOSE:2}
+M.~Porter, ``An algorithm for suffix stripping,'' {\em Program, 14 no.3}, 1980.
+
+\bibitem{BYOSE:3}
+F.~J.~O. Tong~Zhang, ``Text categorization based on regularized linear
+  classification models,'' {\em Information Retrieval}, 2001.
+
+\bibitem{BYOSE:4}
+D.~L. Thomas K~Landauer, Peter W~Foltz, ``An introduction to latent semantic
+  anaysis,'' {\em Discourse Processes}, 2001.
+
+\bibitem{BYOSE:5}
+T.~Joachims, ``Text categorization with support vector machines: Learning with
+  many relevant features,'' {\em Springer}, 1998.
+
+\bibitem{BYOSE:6}
+N.~Project, ``Natural language toolkit,'' {\em nltk.org}, 2015.
 
 \end{thebibliography}

@@ -66,6 +66,9 @@
 % ##############################################
 %
 % ------------------------------------------------------------------
+% Use the graphics package to display pictures
+\usepackage{graphicx}
+
 \begin{document}
 
 \newcommand{\code}[1]{\texttt{#1}}
@@ -105,8 +108,9 @@
 \input{02_Chapters/FinalThoughts.tex}
 
 % References
+\nocite{*}
 \bibliographystyle{ieeetr}
-\bibliography{02_Chapters/References.bib}
+\bibliography{02_Chapters/References}
 
 % Start appendix
 \appendix
