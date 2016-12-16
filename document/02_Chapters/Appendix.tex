@@ -7,7 +7,11 @@ We have included the solutions to each exercise. The skeleton code is omitted fo
 
 \section{Warmup Solutions}
 
-<warmup solutions here>
+\begin{enumerate}
+\item{The document vector is a vector of the tf-idf statistics for one document. There are many zeros because of all of the words in all of the documents in the corpus, only a small subset is used in the document; thus, there will be a zero tf-idf value for most words.}
+\item{The dot product measures how ?well aligned? the two document vectors are in the feature space. This corresponds to how similar the documents are. The higher the dot product, the higher the similarity. The results do make sense because the two documents about gold mines which are more likely to be similar in content have a much higher dot product than the documents about gold mines and agriculture that are more likely to be quite different in content.}
+\item{$XX^\intercal$ would be a matrix where each element is the dot product of two documents. Thus the matrix would be a matrix of document similarities. $X^\intercal X$ would be a matrix where each element is the dot product of two terms. Thus, the matrix would be a matrix of term similarities.}
+\end{enumerate}
 
 \section{Lab Solutions}
 

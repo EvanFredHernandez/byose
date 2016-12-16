@@ -91,7 +91,7 @@ class Corpus(object):
             if include_ids is true.
         """
         return Corpus._get_matrix_dict(
-            dict(self._train_docs.items() +  self._test_docs.items()), 
+            dict(self._train_docs.items() +  self._test_docs.items()),
             include_ids)
 
     def train_matrix(self, category=None, include_ids=False):
@@ -161,7 +161,7 @@ class Corpus(object):
     @staticmethod
     def _get_matrix_dict(docs, include_ids):
         """Returns a dict from categories to the corresponding given docs.
-        
+
         See docstring for complete_matrix_dict for parameter/return value details.
         """
         docs_by_category = {category:([], []) for category in reuters.categories()}
