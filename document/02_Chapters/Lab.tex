@@ -2,46 +2,63 @@
 %%% You can use special characters just like ä,ü and ñ
 
 \chapter{Lab}
-Welcome to the lab where you?ll be building your own search engine! In this lab, you?ll be using the Reuters corpus which is the most widely used text collection for text categorization research. It has 21,578 documents, each labeled with multiple categories making this text classification different than regular single class classification. The lab will require you to program basic functions for a search engine like low-rank approximation, classification using least squares, k-nearest neighbors, and support vector machines (for comparison), in addition to a final search function that brings all of this together.
+In this lab, you will construct a small and simple search engine for the Reuters-21578 corpus. The Reuters corpus was released in 2000 and since then has become the most widely used dataset for research on text categorization. It is called Reuters-21578 because it contains 21578 articles taken from Reuters News. Each article is labeled with a number of semantic categories ranging from acquisitions to coconuts. Note that there is a lot of overlap between categories, and some categories have significantly more articles than others. The corpus has already been partitioned into a training set and testing set.
 \\\\
-<how the search engine will work>
+Real search engines are complicated and involve many intermediate steps like intention mapping, query enrichment, etc. We will focus on the material covered in the background and implement a simplified search engine. The search engine will organize the Reuters Corpus by category, with each category having its own training document matrix and testing document matrix. During initialization, the search engine will perform latent semantic analysis on all document matrices under each category, reducing the rank of each matrix by at most half. The search engine will then train a one-vs-one collection of SVM classifiers to categorize new documents. It will use this classification schema to categorize vectorized queries and limit its search space to promising categories. Finally, the search engine will compare the vectorized query to every document in the majority-vote categories.  
 \\\\
-<what the skeleton looks like>
+To make your life easier, we have provided a code skeleton on top of which you will implement your search engine. Below is a brief description of the files we have provided.
+\begin{center}
+    \begin{tabular}{| l | p{3cm} | l | p{6cm} |}
+    \hline
+    File & Useful Functions & Read it? & Description \\ \hline
+    \code{pre.py} & None & No & Physically loads and vectorizes the Reuters corpus. Caches the results. \\ \hline
+    \code{corpus.py} & \code{train\_matrix}, \code{test\_matrix}, \code{complete\_matrix} & Yes & Gets the Reuters corpus, vectorizes each document, and organizes the documents into category matrices, where each document in a category $c$'s matrix belongs to category $c$. Provides utility for getting the training/testing partitions of a category. \textbf{You will use this code to help you test.} \\ \hline
+    \code{search\_engine.py} & \code{search} & No & Uses the functions from the lab skeleton to implement the search steps described above. \\ \hline
+    \code{main.py} & \code{main} & No & Runs a simple interface for the search engine. \\ \hline
+    \end{tabular}
+\end{center}
+In particular, we ask that you spend some time looking at the functions in \code{corpus.py}. After instantiating a \code{Corpus} object, you can easily access the training matrix for the `acq' category, for example, by calling \code{my\_corpus.train\_matrix(`acq')}. Likewise, you can access the testing matrix for the `acq' category by calling \code{my\_corpus.test\_matrix(`acq')}, or the complete matrix by calling \code{my\_corpus.complete\_matrix(`acq')}. If you want, you can create a dictionary whose keys are category names and whose values are training, testing, or complete matrices. The \code{Corpus} class also provides static methods for getting a document's categories or raw text.
+\\\\
+Please note that your code will take a long time to run the first time. This is because our skeleton is vectorizing the corpus. After the first time, we cache the data in \code{pkl} files, so subsequent instances will run much faster.
 \section{Setup}
 First, you will need to download our skeleton code and make sure you have the required software and libraries to run it. We used Python 2.7.11 and pip 9.0.1 on OSX 10.0.1, but these versions for Python and pip are not strictly required. If you do run into problems, we recommend that you just upgrade to the latest versions of pip and Python 2.7. The installation steps are as follows:
 \begin{enumerate}
-\item{Install Python and pip. If you need help, look \url[https://wiki.python.org/moin/BeginnersGuide/Download]{here} and \url[https://pip.pypa.io/en/stable/installing/]{here}.}
+\item{Install Python and pip.}
 \item{Install Python libraries dill, nltk, sklearn, and numpy through pip.}
-\item{Download the data by running \code{python -m nltk.downloader punkt stopwords reuters} or by using \code{nltk.downloader()} from within Python and installing the punkt, stopwords, and reuters datasets.}
-\item{Finally, you?ll need the code we?ve provided, which you can find in the appendix or at \url{https://github.com/EvanFredHernandez/byose}.}
+\item{Download the data by running 
+	\begin{center}\code{python -m nltk.downloader punkt stopwords reuters}\end{center} 
+or by using \code{nltk.downloader()} from within Python and installing the punkt, stopwords, and reuters datasets.}
+\item{Finally, you'll need the code we've provided, which you can find in the appendix or at \color{blue} \underline{\url{https://github.com/EvanFredHernandez/byose}}.}
 \end{enumerate}
 
 \section{Warmup}
+We begin with some routine exercises. These should expose you to our skeleton. Feel free to create a separate python file for these questions---they will not be used in the actual lab.
 \begin{enumerate}
-\item{Get the document vector with the document id ?training/309? using the \code{document\_vector} function of a Corpus instance. The ?training/309? document is about gold mines in South Africa. The document vector is long, but take a look and explain what the vector represents (what do the columns correspond to?) and why there are so many zeros. If you?re curious about the content of the document, you can call the static method \code{document\_text(doc\_id)} to have a look.}
-\item{Now get the document vectors for ?training/309? and  ?training/448? and compute the dot product between them. The  ?training/448? document is about Brazilian gold mines. Now compute the dot product between ?training/309?  and ?training/3358?  and compare this result to the previous. The ?training/3358? document is about agriculture and cereal ingredients. What do the dot products mean? Do the results make sense, relative to each other?}
+\item{Create a \code{Corpus} object. Get the document vector with the document id `training/309' calling the \code{document\_vector} function of your Corpus instance. The `training/309' document is about gold mines in South Africa. The document vector is long, but take a look and explain what the vector represents (what do the columns correspond to?) and why there are so many zeros. If you're curious about the content of the document, you can call the static method \code{Corpus.document\_text(doc\_id)} to have a look.}
+\item{Now get the document vectors for `training/309' and  `training/448' and compute the normalized dot product between them. The `training/448' document is about Brazilian gold mines. Now compute the normalized dot product between `training/309'  and `training/3358'  and compare this result to the previous. The `training/3358' document is about agriculture and cereal ingredients. What do the dot products mean? Do the results make sense, relative to each other?}
 \item{Now suppose that you have a matrix $X$ that?s composed of stacked document vectors, like the ones you retrieved in the preceding parts. What would be the meaning of a matrix $XX^\intercal$ and each of its elements? What about $X^\intercal X$?}
 \end{enumerate}
 
 \section{Build Your Own Search Engine}
-You will now implement the functions used by the search engine. 
+You will now implement the functions used by the search engine. Note that each question has its own skeleton file. For example, the skeleton for question one can be found in \code{part1.py}. We will often refer to functions defined in the skeleton files. Feel free to add helper functions.
 \begin{enumerate}
-\item{Implement k-rank approximation. In the test method, use your function to find the rank 2 approximation of [[1, 2, 3, 4], [2, 3, 4, 5], [3, 4, 5, 6]]. We?ll use this method later.}
-\item{Let?s try categorizing documents the old-fashioned way and use k-nearest neighbors.
+\item{Implement the \code{k\_rank\_approximate} function. It takes two inputs: a matrix whose rows are document vectors, and an integer $k$, which specifies the desired rank for the resulting matrix. After you have finished this method, implement \code{test\_k\_rank\_approximate} by finding a 2-rank approximation of the $4 \times 4$ identity and then finding a 300-rank approximation of the complete matrix for the 'acq' category. Verify that the resulting ranks are correct.}
+
+\item{We must now teach our search engine to categorize documents. Let's first try categorizing documents the old-fashioned way using k-nearest neighbors.
 	\begin{enumerate}
-	\item{Implement the \code{knn} function. Since the document vector could be in the document matrix, be sure to not count the document vector when found in the document matrix as a nearest neighbor.}
-	\item{Find document with ID 'training/1684' and read the text. Then use the \code{knn} function to find its 3 nearest neighbors (not including itself) and read the text of those documents. Are they similar? Does these results make sense?}
-	\item{Now test the accuracy of your \code{knn} function by implementing \code{test\_knn}. For each category, take all documents in that category, classify each of them, and check to see if the category is in the classification.}
+	\item{Implement the \code{knn} function. Do not count the given document as a neighbor of itself.}
+	\item{Find document with ID `training/1684' and read the text. Use the \code{knn} function to find its 3 nearest neighbors (not including itself) and read the text of those documents. Are they similar? Does these results make sense?}
+	\item{Now test the accuracy of your \code{knn} function by implementing \code{test\_knn}. For one or more categories in the Reuter's corpus, try to classify every document in the category, and determine the accuracy of your kNN classifier.}
 	\end{enumerate}
 }
-\item{We will now implement the classification component of the lab.
+\item{As you have probably observed, k-nearest neighbors classification is slow. Such latency is unacceptable when users expect real-time answers to queries. Even though we have do not have the technical means for implementing real-time search, we can at least try to do better. Let's try training least squares and SVM classifiers so that our classification time is $O(m)$, where $m$ is the number of term features.
 	\begin{enumerate}
-	\item{Implement \code{train\_ls\_classifier} (with ridge regularization) and \code{compute\_categorization\_error}. Use your favorite iterative method for the first. Use 10000 iterations, with $\lambda = 0.001$ and $\gamma = 0.001$. Train on two very similar categories (coconut vs. coconut\_oil) and two very different categories (coconut vs. copper). Which performed better? Why?
-	}
-	\item{Implement \code{train\_svm\_classifier} using gradient descent. Use L2 regularization for the sake of comparison. Train on same categories as above. How do your results compare to the least squares classifier?}
-	\item{Use these functions to implement the functions \code{train\_one\_vs\_one\_classifier} and \code{one\_vs\_one\_classify}. We will represent one-vs-one classifiers as the tuple (<weights>, <+1 category>, <-1 category>). Note: Make sure you are computing $k(k-1)/2$ classifiers and NOT $k^2$ classifiers.
-	}
+	\item{Implement \code{train\_ls\_classifier} using your favorite iterative method. Your implementation should use Tikhonov regularization and should run for 10000 iterations, with regularization parameter $\lambda = 0.01$ and learning rate $\gamma = 0.001$. Also implement \code{compute\_categorization\_error}. Then, in \code{test\_ls\_classifier}, train a least squares classifier to distinguish between the `coconut' and `copper' categories. How does your classifier perform? Train another least squares classifier to distinguish the `coconut' and `coconut\_oil' categories. How does your classifier perform now? Is there a performance difference? Why?}
+	\item{Implement \code{train\_svm\_classifier} using gradient descent and Tikhonov regularization. Repeat the experiments above. How do your results compare to the least squares classifier?}
+	\item{Use these functions to implement the functions \code{train\_one\_vs\_one\_classifier} and \code{one\_vs\_one\_classify}. We will represent one-vs-one classifiers as the tuple (<weights>, <+1 category>, <-1 category>).
+	\\\\
+	Note: Make sure you are computing $k(k-1)/2$ classifiers and \textbf{not} $k^2$ classifiers. You do not have to write tests for these functions, but you can if you wish.}
 	\end{enumerate}
 }
-\item{Finally, write the search function and then test it out! Run main.py with a few of your own queries. You can also try ?bahia cocoa zone.? How does it work?}
+\item{Finally, implement the \code{find\_closest\_documents} function. You have now completed your search engine! To test your code, execute the \code{main.py} file, initialize the search engine with the \code{i} command, and then enter a few of your own queries. You can also try searching `bahia cocoa zone.' How does it work?}
 \end{enumerate}

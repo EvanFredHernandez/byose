@@ -3,14 +3,14 @@
 
 \chapter{Appendix}
 
-We have included the solutions to each exercise. The skeleton code is omitted for concision, but can be found at \url{https://github.com/EvanFredHernandez/byose}.
+We have included the solutions to each exercise. The skeleton code and provided APIs are omitted for concision, but can be found at \color{blue}\underline{\url{https://github.com/EvanFredHernandez/byose}} \color{black}.
 
 \section{Warmup Solutions}
 
 \begin{enumerate}
-\item{The document vector is a vector of the tf-idf statistics for one document. There are many zeros because of all of the words in all of the documents in the corpus, only a small subset is used in the document; thus, there will be a zero tf-idf value for most words.}
-\item{The dot product measures how ?well aligned? the two document vectors are in the feature space. This corresponds to how similar the documents are. The higher the dot product, the higher the similarity. The results do make sense because the two documents about gold mines which are more likely to be similar in content have a much higher dot product than the documents about gold mines and agriculture that are more likely to be quite different in content.}
-\item{$XX^\intercal$ would be a matrix where each element is the dot product of two documents. Thus the matrix would be a matrix of document similarities. $X^\intercal X$ would be a matrix where each element is the dot product of two terms. Thus, the matrix would be a matrix of term similarities.}
+\item{The document vector is a vector of the tf-idf statistics for one document. There are many zeros because there is one feature for every meaningful word in the corpus, but only a small subset of all words appears in each document. Thus, there will be a zero tf-idf value for most words.}
+\item{The normalized dot product measures how ``well aligned'' the two document vectors are in the feature space. This is a measure of how similar the two documents are. A larger normalized dot product means that the documents shared many terms with large tf-idf weights, so they are semantically similar. The results do make sense because both documents are about gold mines---they likely share many significant terms related to mining gold, giving them a large normalized dot product. On the other hand, the document about agriculture will have a small normalized dot product with the document on gold mining because they are unlikely to share many significant terms. We would hope this is the case, as they're documents on completely different subjects!}
+\item{$XX^\intercal$ is a matrix where element $ij$ is the dot product of $d_i$ and $d_j$. Thus it is a matrix of non-normalized document similarities. $X^\intercal X$ would be a matrix where element $ij$ is the non-normalized dot product of the term $i$ and term $j$ vectors. In this case we have a matrix of non-normalized term similarities.}
 \end{enumerate}
 
 \section{Lab Solutions}

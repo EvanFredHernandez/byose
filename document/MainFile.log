@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.9.26)  15 DEC 2016 23:28
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.9.26)  16 DEC 2016 13:23
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1208,32 +1208,64 @@ Underfull \hbox (badness 10000) in paragraph at lines 5--10
 
  []
 
-LaTeX Font Info:    Try loading font information for T1+cmtt on input line 13.
+LaTeX Font Info:    Try loading font information for T1+cmtt on input line 14.
 (/usr/local/texlive/2015/texmf-dist/tex/latex/base/t1cmtt.fd
 File: t1cmtt.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-Overfull \hbox (117.64075pt too wide) in paragraph at lines 13--14
-[]\T1/cmr/m/n/10.95 Install Python and pip. If you need help, look []$\T1/cmtt/
-m/n/10.95 [$[]\T1/cmr/m/n/10.95 https://wiki.python.org/moin/BeginnersGuide/Dow
-nload]here
+Underfull \hbox (badness 10000) in paragraph at lines 15--15
+[]|\T1/cmtt/m/n/10.95 train_matrix\T1/cmr/m/n/10.95 ,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 15--15
+\T1/cmtt/m/n/10.95 test_matrix\T1/cmr/m/n/10.95 ,
+ []
+
+
+Underfull \hbox (badness 1789) in paragraph at lines 17--17
+[]|\T1/cmr/m/n/10.95 Runs a sim-ple in-ter-face for the
+ []
+
+
+Overfull \hbox (10.19383pt too wide) in paragraph at lines 11--19
+ [] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 20--23
+
  []
 
 [9
 
-]
-Overfull \hbox (95.08849pt too wide) in paragraph at lines 39--41
-[]\T1/cmr/m/n/10.95 Implement \T1/cmtt/m/n/10.95 train_ls_classifier \T1/cmr/m/
-n/10.95 (with ridge reg-u-lar-iza-tion) and \T1/cmtt/m/n/10.95 compute_categori
-zation_error\T1/cmr/m/n/10.95 .
+] [10] [11]
+Underfull \hbox (badness 1776) in paragraph at lines 56--57
+\T1/cmr/m/n/10.95 im-ple-men-ta-tion should use Tikhonov reg-u-lar-iza-tion and
+ should run for
  []
 
-[10]) (./02_Chapters/FinalThoughts.tex [11]
+
+Underfull \hbox (badness 10000) in paragraph at lines 58--61
+
+ []
+
+) (./02_Chapters/FinalThoughts.tex [12]
 chapter 3.
-) (./02_Chapters/Appendix.tex [12
+)
+Underfull \hbox (badness 10000) in paragraph at lines 6--106
+
+ []
+
+(./02_Chapters/Appendix.tex [13
 
 ]
 chapter A.
-) [13
+
+Overfull \hbox (6.86818pt too wide) in paragraph at lines 6--7
+\T1/cmr/m/n/10.95 omit-ted for con-ci-sion, but can be found at []$[]$
+ []
+
+) [14
 
 ]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 113.
@@ -1246,9 +1278,9 @@ Package rerunfilecheck Info: File `MainFile.out' has not changed.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 113.
  ) 
 Here is how much of TeX's memory you used:
- 29612 strings out of 493091
- 678239 string characters out of 6134964
- 913328 words of memory out of 5000000
+ 29613 strings out of 493091
+ 678246 string characters out of 6134964
+ 912328 words of memory out of 5000000
  32485 multiletter control sequences out of 15000+600000
  20369 words of font info for 56 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -1273,10 +1305,10 @@ ve/2015/texmf-dist/fonts/type1/public/cm-super/sfsx1440.pfb></usr/local/texlive
 /2015/texmf-dist/fonts/type1/public/cm-super/sfsx2074.pfb></usr/local/texlive/2
 015/texmf-dist/fonts/type1/public/cm-super/sfti1095.pfb></usr/local/texlive/201
 5/texmf-dist/fonts/type1/public/cm-super/sftt1095.pfb>
-Output written on MainFile.pdf (15 pages, 319183 bytes).
+Output written on MainFile.pdf (16 pages, 325147 bytes).
 PDF statistics:
- 289 PDF objects out of 1000 (max. 8388607)
- 250 compressed objects within 3 object streams
- 56 named destinations out of 1000 (max. 500000)
+ 291 PDF objects out of 1000 (max. 8388607)
+ 251 compressed objects within 3 object streams
+ 57 named destinations out of 1000 (max. 500000)
  165 words of extra memory for PDF output out of 10000 (max. 10000000)
 
