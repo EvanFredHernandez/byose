@@ -63,7 +63,7 @@ def classification_error(A, w, y):
     Returns:
         Number of misclassified examples.
     """
-    return np.cumsum(0.5 * (np.sign(A * w) - y))
+    return np.sum(0.5 * (np.sign(A * w) - y))
 
 def train_one_vs_one_classifier(category_train_documents):
     """Computes a one-vs-one classifier schema for each pair of categories.
@@ -109,7 +109,7 @@ def classify(one_vs_one_classifiers, doc):
 def test_ls_classifier(corpus):
     """Test your LS classifier!
 
-    First, train an LS classifier to distinguish between the coconut and coconut_oil
+    First, train an LS classifier to distinguish between the coconut and coconut-oil
     categories. How does it perform on the testing data? Then train another LS classifier
     to distinguish between the coconut and copper categories. Again, how does it perform?
     Why do you see these results?
@@ -118,10 +118,10 @@ def test_ls_classifier(corpus):
         corpus: A corpus object, used for convenient access to the Reuters corpus.
     """
     print 'Testing LS classifier on coconut vs. copper...'
-    test_classifier_on_categories('coconut', 'copper', train_ls_classifier, corpus)
+    test_classifier_on_categories('money-fx', 'acq', train_ls_classifier, corpus)
 
-    print 'Testing LS classifier on coconut vs. coconut_oil...'
-    test_classifier_on_categories('coconut', 'coconut_oil', train_ls_classifier, corpus)
+    print 'Testing LS classifier on coconut vs. coconut-oil...'
+    test_classifier_on_categories('money-fx', 'money-supply', train_ls_classifier, corpus)
 
 def test_svm_classifier(corpus):
     """Test your SVM classifier!
@@ -133,10 +133,10 @@ def test_svm_classifier(corpus):
         corpus: A corpus object, used for convenient access to the Reuters corpus.
     """
     print 'Testing LS classifier on coconut vs. copper...'
-    test_classifier_on_categories('coconut', 'copper', train_svm_classifier, corpus)
+    test_classifier_on_categories('money-fx', 'acq', train_svm_classifier, corpus)
 
-    print 'Testing LS classifier on coconut vs. coconut_oil...'
-    test_classifier_on_categories('coconut', 'coconut_oil', train_svm_classifier, corpus)
+    print 'Testing LS classifier on coconut vs. coconut-oil...'
+    test_classifier_on_categories('money-fx', 'money-supply', train_svm_classifier, corpus)
 
 def test_classifier_on_categories(category_1, category_2, train_classifier, corpus):
     """A utility function for testing the LS and SVM classifiers.
@@ -156,7 +156,7 @@ def test_classifier_on_categories(category_1, category_2, train_classifier, corp
     train_doc_matrix = np.concatenate((train_matrix_1, train_matrix_2))
     train_labels = np.concatenate((
         np.ones((train_matrix_1.shape[0], 1)),
-        np.ones((train_matrix_2.shape[0], 1))
+        -np.ones((train_matrix_2.shape[0], 1))
     ))
     classifier = train_classifier(train_doc_matrix, train_labels)
     test_matrix_1 = corpus.test_matrix(category_1)
@@ -164,7 +164,7 @@ def test_classifier_on_categories(category_1, category_2, train_classifier, corp
     test_doc_matrix = np.concatenate((test_matrix_1, test_matrix_2))
     test_labels = np.concatenate((
         np.ones((test_matrix_1.shape[0], 1)),
-        np.ones((test_matrix_2.shape[0], 1))
+        -np.ones((test_matrix_2.shape[0], 1))
     ))
     error = classification_error(test_doc_matrix, classifier, test_labels)
     print category_1, 'vs.', category_2, 'error:', error
