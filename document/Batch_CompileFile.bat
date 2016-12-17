@@ -19,7 +19,6 @@ biber	  MainFile
 rem --- Compile three times to make sure everything is correct ---
 :: ---
 pdflatex --extra-mem-top=60000000 -synctex=1 -shell-escape -interaction=batchmode MainFile.tex
-bibtex MainFile
 pdflatex --extra-mem-top=60000000 -synctex=1 -shell-escape -interaction=batchmode MainFile.tex
 pdflatex --extra-mem-top=60000000 -synctex=1 -shell-escape -interaction=batchmode MainFile.tex
 :: ---
