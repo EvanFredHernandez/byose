@@ -13,13 +13,10 @@ We used `Python 2.7.11` and `pip 9.0.1` on `OSX 10.0.1` but these versions aren'
 After you've gotten those, run `setup.sh` to get setup. If this doesn't work, you can follow the below steps for manual setup.
 
 ### Manual setup
-* Python:
-	* Installation: https://www.python.org/downloads/ 
-* Pip:
-	* `sudo easy_install pip`
-* Python libraries dill, nltk, sklearn, numpy:
-	* `sudo pip install dill nltk sklearn numpy`
-* NLTK corpora:
-	* `python -m nltk.downloader punkt stopwords reuters`
-* This repository's code:
-	* `git clone git@github.com:EvanFredHernandez/byose.git`
+
+You will need to install each of the following.
+* Python: see https://www.python.org/downloads/ 
+* Pip: `sudo easy_install pip`
+* Python libraries: `sudo pip install dill nltk sklearn numpy`
+* NLTK corpora: `python -m nltk.downloader punkt stopwords reuters`
+* This repository's code: `git clone git@github.com:EvanFredHernandez/byose.git`
