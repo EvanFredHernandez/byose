@@ -76,7 +76,7 @@ def train_one_vs_one_classifier(category_train_documents):
         that represents the one-vs-one classifier for category_1 and category_2.
     """
     category_classifiers = []
-    for cat_1, cat_2 in itertools.combinations(category_train_documents.keys()):
+    for cat_1, cat_2 in itertools.combinations(category_train_documents.keys(), 2):
         print 'Now training classifier for', cat_1, 'and', cat_2
         train_1 = category_train_documents[cat_1]
         train_2 = category_train_documents[cat_2]
@@ -97,7 +97,10 @@ def classify(one_vs_one_classifiers, doc):
         A 2-tuple of the two majority-vote categories.
     """
     votes = {}
-    for classifier, cat_1, cat_2 in one_vs_one_classifiers.items():
+    for tup in one_vs_one_classifiers:
+        classifier = tup[0]
+        cat_1 = tup[1]
+        cat_1 = tup[2]
         prediction = np.sign(np.inner(doc, classifier)[0])
         if prediction == 1:
             votes[cat_1] = 0 if cat_1 not in votes else votes[cat_1] + 1
@@ -106,7 +109,7 @@ def classify(one_vs_one_classifiers, doc):
     best = sorted(votes.items(), key=operator.itemgetter(1), reverse=True)
     return (best[0][0], best[1][0])
 
-def test_ls_classifier(corpus):
+def test_ls_classifier(corp):
     """Test your LS classifier!
 
     First, train an LS classifier to distinguish between the coconut and coconut-oil
@@ -115,30 +118,30 @@ def test_ls_classifier(corpus):
     Why do you see these results?
 
     Args:
-        corpus: A corpus object, used for convenient access to the Reuters corpus.
+        corp: A corpus object, used for convenient access to the Reuters corpus.
     """
     print 'Testing LS classifier on coconut vs. copper...'
-    test_classifier_on_categories('money-fx', 'acq', train_ls_classifier, corpus)
+    test_classifier_on_categories('money-fx', 'acq', train_ls_classifier, corp)
 
     print 'Testing LS classifier on coconut vs. coconut-oil...'
-    test_classifier_on_categories('money-fx', 'money-supply', train_ls_classifier, corpus)
+    test_classifier_on_categories('money-fx', 'money-supply', train_ls_classifier, corp)
 
-def test_svm_classifier(corpus):
+def test_svm_classifier(corp):
     """Test your SVM classifier!
 
     Train an SVM classifier for the two pairs of categories given above. How does it compare
     to the LS classifier?
 
     Args:
-        corpus: A corpus object, used for convenient access to the Reuters corpus.
+        corp: A corpus object, used for convenient access to the Reuters corpus.
     """
     print 'Testing LS classifier on coconut vs. copper...'
-    test_classifier_on_categories('money-fx', 'acq', train_svm_classifier, corpus)
+    test_classifier_on_categories('money-fx', 'acq', train_svm_classifier, corp)
 
     print 'Testing LS classifier on coconut vs. coconut-oil...'
-    test_classifier_on_categories('money-fx', 'money-supply', train_svm_classifier, corpus)
+    test_classifier_on_categories('money-fx', 'money-supply', train_svm_classifier, corp)
 
-def test_classifier_on_categories(category_1, category_2, train_classifier, corpus):
+def test_classifier_on_categories(category_1, category_2, train_classifier, corp):
     """A utility function for testing the LS and SVM classifiers.
 
     Trains a classifier using the given function to distinguish between the
@@ -149,7 +152,7 @@ def test_classifier_on_categories(category_1, category_2, train_classifier, corp
         category_1: The first category to test against.
         category_2: The second category to test against.
         train_classifier: Callable for training the classifier.
-        corpus: A corpus object, used for convenient access to the Reuters corpus.
+        corp: A corpus object, used for convenient access to the Reuters corpus.
     """
     train_matrix_1 = corpus.train_matrix(category_1)
     train_matrix_2 = corpus.train_matrix(category_2)
@@ -170,8 +173,8 @@ def test_classifier_on_categories(category_1, category_2, train_classifier, corp
     print category_1, 'vs.', category_2, 'error:', error
 
 if __name__ == '__main__':
-    corpus = Corpus()
+    corp = Corpus()
     print 'Testing LS classifier!'
-    test_ls_classifier(corpus)
+    test_ls_classifier(corp)
     print 'Testing SVM classifier!'
-    test_svm_classifier(corpus)
+    test_svm_classifier(corp)

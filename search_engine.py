@@ -36,7 +36,7 @@ class SearchEngine(object):
         category_data = self._corp.complete_matrix(category, include_ids=True)
         self._doc_ids[category] = category_data[0]
         self._approx_docs[category] = p1.k_rank_approximate(
-            category_matrix, SearchEngine._compute_rank_reduction(category_data[1]))
+            category_data[1], SearchEngine._compute_rank_reduction(category_data[1]))
 
     @staticmethod
     def _compute_rank_reduction(matrix):

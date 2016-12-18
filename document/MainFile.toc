@@ -18,3 +18,4 @@
 \contentsline {chapter}{\numberline {A}Appendix}{15}{appendix.A}
 \contentsline {section}{\numberline {A.1}Warmup Solutions}{15}{section.A.1}
 \contentsline {section}{\numberline {A.2}Lab Solutions}{15}{section.A.2}
+\contentsline {subsection}{\numberline {A.2.1}Part 1}{16}{subsection.A.2.1}

@@ -3,8 +3,6 @@
 (!!!) DO NOT CHANGE ANY CODE IN THIS FILE. (!!!)
 """
 import heapq
-import os
-import sys
 import numpy as np
 from corpus import Corpus
 
