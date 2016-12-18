@@ -10,8 +10,6 @@ This lab assumes some prior knowledge of linear algebra and pattern recognition.
 
 We used `Python 2.7.11` and `pip 9.0.1` on `OSX 10.0.1` but these versions aren't at all mandatory. If you do encounter trouble getting setup, we recommend that you try updating your packages.
 
-After you've gotten those, run `setup.sh` to get setup. If this doesn't work, you can follow the below steps for manual setup.
-
 ### Manual setup
 
 You will need to install each of the following.
