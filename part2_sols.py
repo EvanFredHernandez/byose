@@ -1,4 +1,4 @@
-"""Part 2 solutions.
+"""Part 2 solutions. See part2.py for function docstrings.
 
 (!!!) DO NOT CHANGE ANY CODE IN THIS FILE. (!!!)
 """
@@ -10,17 +10,6 @@ N_LARGEST = 4
 VERBOSE = False
 
 def knn(doc_matrix, ids, doc_vector, k):
-    """Finds the k most similar docs in the doc matrix to the given doc vector.
-
-    Args:
-        doc_matrix: An (n, m) matrix where each row is a vectorized document.
-        ids: An (n, 1) array where the ith element corresponds to the ith row in doc_matrix.
-        doc_vector: An (m, 1) vector that represnts a vectorized document.
-        k: The number of clusters to create.
-
-    Returns:
-        List of unique categories of the k nearest neighbors of the doc_vector
-    """
     best = []
     for i in range(k):
         heapq.heappush(best, (-float("inf"), (i, None)))
@@ -49,11 +38,6 @@ def knn(doc_matrix, ids, doc_vector, k):
     return categories
 
 def test_knn(corp):
-    """ Tests the knn classification function. Implement this however you like.
-
-    Args:
-        corpus: A corpus object, used for convenient access to the Reuters corpus.
-    """
     ids, complete_matrix = corp.complete_matrix(include_ids=True)
     category_map = corp.complete_matrix_dict()
     categories = category_map.keys()

@@ -3,7 +3,7 @@
 
 \chapter{Appendix}
 
-We have included sample solutions to each exercise. The skeleton code and provided APIs are omitted for concision, but can be found at \color{blue}\underline{\url{https://github.com/EvanFredHernandez/byose}} \color{black}.
+We have included sample solutions to each exercise. The skeleton code and provided APIs are omitted for concision, but can be found at \color{blue}\underline{\url{https://github.com/EvanFredHernandez/byose}}\color{black}.
 
 \section{Warmup Solutions}
 
@@ -14,18 +14,21 @@ We have included sample solutions to each exercise. The skeleton code and provid
 \end{enumerate}
 
 \section{Lab Solutions}
-We provide code solutions for each part of the lab. Some of the exercises can be solved in many ways!
-
+We provide code solutions for each part of the lab. The solutions can also be found and run at the GitHub repository. Some of the corpus initialization code was inspired by \cite{NLTK}. Please note that these are example solutions. Your code may look different and still work correctly. In particular, we have added optimizations for running certain computations in parallel and for caching precomputed data.
+\\\\
+To use our code solutions in your search engine, simply change the import statements at the top of \code{search\_engine.py} to be \code{partX\_sols.py} instead of \code{partX.py}.
 \subsection{Part 1}
 You should see that the resulting matrices have rank 2 and rank 300, respectively.
-\lstinputlisting[language=Python, caption=Part 1 Code Solutions, firstline=5, lastline=41]{../part1_sols.py}
+\lstinputlisting[language=Python, caption=Part 1 Code Solutions, firstline=5, lastline=22]{../part1_sols.py}
 
-\pagebreak
+\subsection{Part 2}
+Running \code{knn} on `training/1684' returns three documents that belong to the acquisitions category. Your k-nearest neighbors implementation should have around 89\% accuracy when tested against all of the Reuters categories put together.
+\lstinputlisting[language=Python, caption=Part 2 Code Solutions, firstline=5, lastline=54]{../part2_sols.py}
 
-\lstinputlisting[language=Python, caption=Part 2 Code Solutions, firstline=5, lastline=70]{../part2_sols.py}
+\subsection{Part 3}
+You will notice that the least squares and SVM classifiers behave comparably on both pairs of categories. However, the least squares classifier outperforms the SVM classifier in both cases by a small margin (about 10 misclassifications vs. about 4 misclassifications). Both classifiers perform worse on the second pair of categories because they are semantically similar, while the first pair is highly distinguishable and therefore easier to classify.
+\lstinputlisting[language=Python, caption=Part 3 Code Solutions, firstline=5, lastline=98]{../part3_sols.py}
 
-\pagebreak
-\lstinputlisting[language=Python, caption=Part 3 Code Solutions, firstline=5, lastline=173]{../part3_sols.py}
-
-\pagebreak
-\lstinputlisting[language=Python, caption=Part 4 Code Solutions, firstline=5, lastline=30]{../part4_sols.py}
+\subsection{Part 4}
+You have a number of options for testing the search engine, but we suggest training only a fraction of the classifiers and then searching for documents within the trained categories. The search results will not always be perfect, particularly because the queries are sparse and therefore difficult to classify. Moreover, we have omitted any discussion of query enrichment or translation of queries into low-dimensional semantic space, so the query-to-document comparison accuracy will be off.
+\lstinputlisting[language=Python, caption=Part 4 Code Solutions, firstline=5, lastline=14]{../part4_sols.py}

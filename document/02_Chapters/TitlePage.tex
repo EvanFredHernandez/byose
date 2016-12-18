@@ -2,10 +2,38 @@
 %%% You can use special characters just like ä,ü and ñ
 
 % Title page using \maketitle (a more flexible alternative is the titlepage environment)
-\title{Build Your Own Search Engine}
-\subtitle{An Introduction to Machine Learning Methods in Text Mining}
-\author{Evan Hernandez (\href{mailto:ehernandez4@wisc.edu}{ehernandez4@wisc.edu}, 907-092-9055) \\
-	    David Liang (\href{mailto:dliang23@wisc.edu}{dliang23@wisc.edu}, 907-034-1251) \\
-	    Alec Yu (\href{mailto:amyu@wisc.edu}{amyu@wisc.edu}, 907-075-3653)}
-\date{December 2016}
-\maketitle
+\newcommand\BackgroundIm{
+	\put(-3,0){
+		\parbox[b][\paperheight]{\paperwidth}{%
+			\centering
+			\transparent{0.95}
+			\includegraphics[angle=90,height=\paperheight,width=\paperwidth]{03_GRAPHICS/cover.jpg}%
+}}}
+\AddToShipoutPicture*{\BackgroundIm}
+\begin{titlepage}
+	\color{white}
+	\centering
+	\vspace{4cm}
+	{\Huge\bfseries\scshape Build Your Own Search Engine \par}
+	\vspace{1cm}
+	{\scshape\huge An Introduction to Machine Learning Methods in Text Mining \par}
+	\vspace{10cm}
+	{
+		Evan Hernandez (\href{mailto:ehernandez4@wisc.edu}{ehernandez4@wisc.edu}, 907-092-9055) \par
+		\color{white}David Liang (\href{mailto:dliang23@wisc.edu}{dliang23@wisc.edu}, 907-034-1251) \par
+		\color{white}Alec Yu (\href{mailto:amyu@wisc.edu}{amyu@wisc.edu}, 907-075-3653\par
+	}
+	
+	\vfill
+	
+	{
+	 Supervised by Dr. Laurent Lessard \par
+	 Department of Electrical and Computer Engineering \par
+	 University of Wisconsin-Madison
+	}
+	
+	\vfill
+	
+	% Bottom of the page
+	{\large \today\par}
+\end{titlepage}

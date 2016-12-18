@@ -24,10 +24,10 @@ Please note that your code will take a long time to run the first time. This is 
 First, you will need to download our skeleton code and make sure you have the required software and libraries to run it. We used Python 2.7.11 and pip 9.0.1 on OSX 10.0.1, but these versions for Python and pip are not strictly required. If you do run into problems, we recommend that you just upgrade to the latest versions of pip and Python 2.7. The installation steps are as follows:
 \begin{enumerate}
 \item{Install Python and pip.}
-\item{Install Python libraries dill, nltk, sklearn, and numpy through pip.}
+\item{Install Python libraries \code{dill}, \code{nltk}, \code{sklearn}, and \code{numpy} through pip.}
 \item{Download the data by running 
 	\begin{center}\code{python -m nltk.downloader punkt stopwords reuters}\end{center} 
-or by using \code{nltk.downloader()} from within Python and installing the punkt, stopwords, and reuters datasets.}
+or by using \code{nltk.downloader()} from within Python and installing the \code{punkt}, \code{stopwords}, and \code{reuters} datasets.}
 \item{Finally, you'll need the code we've provided, which you can find in the appendix or at \color{blue} \underline{\url{https://github.com/EvanFredHernandez/byose}}.}
 \end{enumerate}
 
@@ -57,8 +57,11 @@ You will now implement the functions used by the search engine. Note that each q
 	\item{Implement \code{train\_svm\_classifier} using gradient descent and Tikhonov regularization. Repeat the experiments above. How do your results compare to the least squares classifier?}
 	\item{Use these functions to implement the functions \code{train\_one\_vs\_one\_classifier} and \code{one\_vs\_one\_classify}. We will represent one-vs-one classifiers as the tuple (<weights>, <+1 category>, <-1 category>).
 	\\\\
-	Note: Make sure you are computing $k(k-1)/2$ classifiers and \textbf{not} $k^2$ classifiers. You do not have to write tests for these functions, but you can if you wish.}
+	Make sure you are computing $k(k-1)/2$ classifiers and \textbf{not} $k^2$ classifiers. You do not have to write tests for these functions, but you can if you wish.}
 	\end{enumerate}
 }
-\item{Finally, implement the \code{find\_closest\_documents} function. You have now completed your search engine! To test your code, execute the \code{main.py} file, initialize the search engine with the \code{i} command, and then enter a few of your own queries. You can also try searching `bahia cocoa zone.' How does it work?}
+\item{Finally, implement the \code{find\_closest\_documents} function. You have now completed your search engine! To test your code, execute the \code{main.py} file, initialize the search engine with the \code{i} command, and then enter a few of your own queries. You can also try searching ``bahia cocoa zone.'' How does it work?
+\\\\
+Note: It will take a long time to train all of the classifiers. You may choose to only train a fraction of the necessary classifiers. Make sure you have tested your code from the previous sections well before initializing the search engine.
+}
 \end{enumerate}
