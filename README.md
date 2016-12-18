@@ -4,10 +4,7 @@ ___
 
 A codelab for (B)uilding (Y)our (O)wn (S)earch (E)ngine: a self-contained introduction to text mining and document categorization. Readers will learn how to represent textual documents as vectors, reduce the dimensionality of document vectors in semantic space, and classify documents into predefined semantic categories using the k-nearest neighbors algorithm, regularized least squares classification, and regularized support vector machines.
 
-This lab assumes some prior knowledge of linear algebra and pattern recognition. In particular, you should be familiar with: the singular value decomposition of a matrix, least squares classification and support vector machines, and regularization. 
-<br>
-<br>
-
+This lab assumes some prior knowledge of linear algebra and pattern recognition. In particular, you should be familiar with: the singular value decomposition of a matrix, least squares classification, support vector machines, and regularization. 
 
 ### Setup
 
