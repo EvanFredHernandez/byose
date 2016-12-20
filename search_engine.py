@@ -2,7 +2,7 @@
 
 (!!!) DO NOT CHANGE ANY CODE IN THIS FILE. (!!!)
 """
-import thread
+from threading import Thread
 import part1_sols as p1
 import part3_sols as p3
 import part4_sols as p4
@@ -28,8 +28,15 @@ class SearchEngine(object):
 
         Each approximation is calculated on a separate thread.
         """
+        threads = []
         for category in Corpus.all_categories():
-            thread.start_new_thread(self._approx_doc_matrix, (category,))
+            approx_thread = Thread(target=self._approx_doc_matrix, args=(category,))
+            approx_thread.start()
+            threads.append(approx_thread)
+        
+        # Wait on each thread.
+        for approx_thread in threads:
+            approx_thread.join()
 
     def _approx_doc_matrix(self, category):
         """Launches k-rank approximation for given category matrix."""

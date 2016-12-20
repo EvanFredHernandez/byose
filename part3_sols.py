@@ -38,7 +38,6 @@ def classification_error(A, w, y):
     return np.sum(0.5 * (np.sign(A * w) - y))
 
 def train_one_vs_one_classifier(category_train_documents):
-    print 'lol training classifiers...'
     category_classifiers = []
     for cat_1, cat_2 in itertools.combinations(category_train_documents.keys(), 2):
         print 'Now training classifier for', cat_1, 'and', cat_2
