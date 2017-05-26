@@ -54,7 +54,7 @@ def classify(one_vs_one_classifiers, doc):
     for tup in one_vs_one_classifiers:
         classifier = tup[0]
         cat_1 = tup[1]
-        cat_1 = tup[2]
+        cat_2 = tup[2]
         prediction = np.sign(np.inner(doc, classifier)[0])
         if prediction == 1:
             votes[cat_1] = 0 if cat_1 not in votes else votes[cat_1] + 1
